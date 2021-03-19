@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <malloc.h>
+#include <stdio.h>
 struct weapon //自定义类型作为节点元素
 {
   int price;
@@ -16,7 +16,7 @@ struct weapon *create()
   p1 = p2 = (struct weapon *)malloc(sizeof(struct weapon));
   scanf("%d,%d", &p1->price, &p1->atk); // 输入格式: 数据,数据
   head = NULL;
-  while (p1->price != 0)
+  while (p1->price != 0) // 输入 0 结束输入
   {
     n++;
     if (n == 1)
@@ -35,6 +35,10 @@ int main()
 {
   struct weapon *p;
   p = create();
-  printf("%d,%d", p->price, p->atk);
+  while (p != NULL)
+  {
+    printf("%d,%d\n", p->price, p->atk);
+    p = p->next;
+  }
   return 0;
 }
