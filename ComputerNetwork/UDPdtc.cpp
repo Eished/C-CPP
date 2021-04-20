@@ -55,9 +55,9 @@ void UDPdaytime(const char *host, const char *service)
     errexit("recv failed: recv() error %d\n", GetLastError());
   else
   {
-    buf[cc] = '\0'; /* ensure null-termination  */
+    buf[n] = '\0'; /* ensure null-termination  */
     (void)fputs(buf, stdout);
   }
   closesocket(s);
-  return 0; /* exit  */
+  // return 0; /* exit  */
 }

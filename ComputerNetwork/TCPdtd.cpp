@@ -45,7 +45,7 @@ void main(int argc, char *argv[])
       errexit("_beginthread: %s\n", strerror(errno));
     }
   }
-  return 1; /* not reached */
+  // return 1; /* not reached */
 }
 /*----------------------------------------------------------------------
 * TCPdaytimed - do TCP DAYTIME protocol

@@ -11,6 +11,7 @@ SOCKET passiveUDP(const char *);
 */
 void main(int argc, char *argv[])
 {
+  char buf[10];              /* buffer for one line of text */
   struct sockaddr_in fsin;   /* the from address of a client  */
   char *service = "daytime"; /* service name or port number  */
   SOCKET sock;               /* socket */
@@ -42,5 +43,5 @@ void main(int argc, char *argv[])
     (void)sendto(sock, pts, strlen(pts), 0,
                  (struct sockaddr *)&fsin, sizeof(fsin));
   }
-  return 1; /* not reached */
+  // return 1; /* not reached */
 }
