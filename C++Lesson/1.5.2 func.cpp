@@ -3,16 +3,16 @@ using namespace std;
 int oneX = 10;
 int oneY = 20;
 int a = 11;
-int &refValue(int &x) //·µ»ØÖµÊÇÒıÓÃ,¿É×÷×óÖµ
+int &refValue(int &x) //è¿”å›å€¼æ˜¯å¼•ç”¨,å¯ä½œå·¦å€¼
 {
   return x;
 }
 int main()
 {
-  // refValue(oneX) = 30;             //·µ»ØÖµÊÇÒıÓÃ,¿É×÷×óÖµ
-  cout << "oneX=" << oneX << endl; //Êä³ö oneX=30
-  // refValue(oneY) = 40;             //·µ»ØÖµÊÇÒıÓÃµÄº¯Êıµ÷ÓÃ±í´ïÊ½,¿É×÷×óÖµÊ¹ÓÃ
-  cout << "oneY=" << oneY << endl; //Êä³öoneY=40
+  // refValue(oneX) = 30;             //è¿”å›å€¼æ˜¯å¼•ç”¨,å¯ä½œå·¦å€¼
+  cout << "oneX=" << oneX << endl; //è¾“å‡º oneX=30
+  // refValue(oneY) = 40;             //è¿”å›å€¼æ˜¯å¼•ç”¨çš„å‡½æ•°è°ƒç”¨è¡¨è¾¾å¼,å¯ä½œå·¦å€¼ä½¿ç”¨
+  cout << "oneY=" << oneY << endl; //è¾“å‡ºoneY=40
   refValue(a) = 111;
   cout << refValue(a) << endl
        << a;

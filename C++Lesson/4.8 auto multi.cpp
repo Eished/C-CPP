@@ -7,29 +7,29 @@ private:
 
 public:
   Demo(int i = 0) : n(i) {}
-  Demo &operator++();   //ÓÃÓÚÇ°ÖÃ
-  Demo operator++(int); //ÓÃÓÚºóÖÃ
+  Demo &operator++();   //ç”¨äºå‰ç½®
+  Demo operator++(int); //ç”¨äºåç½®
   operator int() { return n; }
   friend Demo &operator--(Demo &);
   friend Demo operator--(Demo &, int);
 };
-Demo &Demo::operator++() //Ç°ÖÃ++
+Demo &Demo::operator++() //å‰ç½®++
 {
   n++;
   return *this;
 }
-Demo Demo::operator++(int k) //ºóÖÃ++
+Demo Demo::operator++(int k) //åç½®++
 {
-  Demo tmp(*this); //¼ÇÂ¼ĞŞ¸ÄÇ°µÄ¶ÔÏó
+  Demo tmp(*this); //è®°å½•ä¿®æ”¹å‰çš„å¯¹è±¡
   n++;
-  return tmp; //·µ»ØĞŞ¸ÄÇ°¶ÔÏó
+  return tmp; //è¿”å›ä¿®æ”¹å‰å¯¹è±¡
 }
-Demo &operator--(Demo &d) //Ç°ÖÃ--
+Demo &operator--(Demo &d) //å‰ç½®--
 {
   d.n--;
   return d;
 }
-Demo operator--(Demo &d, int) //ºóÖÃ--
+Demo operator--(Demo &d, int) //åç½®--
 {
   Demo tmp(d);
   d.n--;

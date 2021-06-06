@@ -1,36 +1,36 @@
 #include <iostream>
 using namespace std;
-void SwapValue(int a, int b) //–Œ≤Œ
+void SwapValue(int a, int b) //ÂΩ¢ÂèÇ
 {
   int tmp;
   tmp = a;
   a = b;
   b = tmp;
-  cout << "‘⁄SwapValue()∫Ø ˝÷–:\t\ta=" << a << ", b=" << b << endl;
+  cout << "Âú®SwapValue()ÂáΩÊï∞‰∏≠:\t\ta=" << a << ", b=" << b << endl;
   return;
 }
-void SwapRef(int &a, int &b) //a,b  µ≤Œ“˝”√µÿ÷∑µƒ÷µª•ªª
+void SwapRef(int &a, int &b) //a,b ÂÆûÂèÇÂºïÁî®Âú∞ÂùÄÁöÑÂÄº‰∫íÊç¢
 {
   int tmp;
   tmp = a;
   a = b;
   b = tmp;
-  cout << "‘⁄SwapRef()∫Ø ˝÷–:\t\ta=" << a << ", b=" << b << endl;
+  cout << "Âú®SwapRef()ÂáΩÊï∞‰∏≠:\t\ta=" << a << ", b=" << b << endl;
   return;
 }
 int main()
 {
   int a = 10;
   int b = 20;
-  cout << " ˝æ›Ωªªª«∞:\t\ta=" << a << ", b=" << b << endl
+  cout << "Êï∞ÊçÆ‰∫§Êç¢Ââç:\t\ta=" << a << ", b=" << b << endl
        << endl;
   SwapValue(a, b);
-  cout << "SwapValue∫Û:\t\ta=" << a << ", b=" << b << endl
+  cout << "SwapValueÂêé:\t\ta=" << a << ", b=" << b << endl
        << endl;
   a = 10;
   b = 20;
   SwapRef(a, b);
-  cout << "SwapRef∫Û:\t\ta=" << a << ", b=" << b << endl
+  cout << "SwapRefÂêé:\t\ta=" << a << ", b=" << b << endl
        << endl;
   return 0;
 }

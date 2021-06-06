@@ -1,19 +1,19 @@
 class myDate
 {
 public:
-  myDate();                    //¹¹Ôìº¯Êı
-  myDate(int, int, int);       //¹¹Ôìº¯Êı
-  void setDate(int, int, int); //ÉèÖÃÈÕÆÚ
-  void setDate(myDate);        //ÉèÖÃÈÕÆÚ
-  myDate getDate();            //»ñÈ¡ÈÕÆÚ
-  void setYear(int);           //ÉèÖÃÄê
-  int getMonth();              //»ñÈ¡ÔÂ
-  void printDate() const;      //´òÓ¡ÈÕÆÚ
+  myDate();                    //æ„é€ å‡½æ•°
+  myDate(int, int, int);       //æ„é€ å‡½æ•°
+  void setDate(int, int, int); //è®¾ç½®æ—¥æœŸ
+  void setDate(myDate);        //è®¾ç½®æ—¥æœŸ
+  myDate getDate();            //è·å–æ—¥æœŸ
+  void setYear(int);           //è®¾ç½®å¹´
+  int getMonth();              //è·å–æœˆ
+  void printDate() const;      //æ‰“å°æ—¥æœŸ
 
 private:
-  int year, month, day; //³ÉÔ±±äÁ¿,ÄêÔÂÈÕ
+  int year, month, day; //æˆå‘˜å˜é‡,å¹´æœˆæ—¥
 };
-//ÀàÌåÍâ¶¨Òå³ÉÔ±º¯Êı
+//ç±»ä½“å¤–å®šä¹‰æˆå‘˜å‡½æ•°
 myDate::myDate()
 {
   year = 1970, month = 1, day = 1;

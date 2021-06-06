@@ -4,20 +4,20 @@ using namespace std;
 class myDate
 {
 public:
-  myDate();                    //¹¹Ôìº¯Êı
-  myDate(int, int, int);       //¹¹Ôìº¯Êı
-  void setDate(int, int, int); //ÉèÖÃÈÕÆÚ
-  void setDate(myDate);        //ÉèÖÃÈÕÆÚ
-  myDate getDate();            //»ñÈ¡ÈÕÆÚ
-  void setYear(int);           //ÉèÖÃÄê
-  int getMonth();              //»ñÈ¡ÔÂ
-  void printDate() const;      //´òÓ¡ÈÕÆÚ
+  myDate();                    //æ„é€ å‡½æ•°
+  myDate(int, int, int);       //æ„é€ å‡½æ•°
+  void setDate(int, int, int); //è®¾ç½®æ—¥æœŸ
+  void setDate(myDate);        //è®¾ç½®æ—¥æœŸ
+  myDate getDate();            //è·å–æ—¥æœŸ
+  void setYear(int);           //è®¾ç½®å¹´
+  int getMonth();              //è·å–æœˆ
+  void printDate() const;      //æ‰“å°æ—¥æœŸ
   ~myDate();
 
 private:
-  int year, month, day; //³ÉÔ±±äÁ¿,ÄêÔÂÈÕ
+  int year, month, day; //æˆå‘˜å˜é‡,å¹´æœˆæ—¥
 };
-//ÀàÌåÍâ¶¨Òå³ÉÔ±º¯Êı
+//ç±»ä½“å¤–å®šä¹‰æˆå‘˜å‡½æ•°
 myDate::myDate()
 {
   year = 1970, month = 1, day = 1;
@@ -65,28 +65,28 @@ void myDate::printDate() const
 class Student
 {
 public:
-  Student();                       //¹¹Ôìº¯Êı,ÎŞ²ÎÊı
-  Student(string);                 //¹¹Ôìº¯Êı,´øÒ»¸ö²ÎÊı
-  void setStudent(string, myDate); //ÉèÖÃÑ§ÉúĞÅÏ¢
-  void setName(string);            //ÉèÖÃĞÕÃû
-  string getName();                //»ñÈ¡ĞÕÃû
-  void setBirthday(myDate);        //ÉèÖÃÉúÈÕ
-  myDate getBirthday();            //»ñÈ¡ÉúÈÕ
-  void printStudent() const;       //´òÓ¡ĞÅÏ¢
-  Student(const Student &s);       //ÉùÃ÷¸´ÖÆ¹¹Ôìº¯Êı
-  ~Student();                      //ÉùÃ÷¸´ÖÆ¹¹Ôìº¯Êı
+  Student();                       //æ„é€ å‡½æ•°,æ— å‚æ•°
+  Student(string);                 //æ„é€ å‡½æ•°,å¸¦ä¸€ä¸ªå‚æ•°
+  void setStudent(string, myDate); //è®¾ç½®å­¦ç”Ÿä¿¡æ¯
+  void setName(string);            //è®¾ç½®å§“å
+  string getName();                //è·å–å§“å
+  void setBirthday(myDate);        //è®¾ç½®ç”Ÿæ—¥
+  myDate getBirthday();            //è·å–ç”Ÿæ—¥
+  void printStudent() const;       //æ‰“å°ä¿¡æ¯
+  Student(const Student &s);       //å£°æ˜å¤åˆ¶æ„é€ å‡½æ•°
+  ~Student();                      //å£°æ˜ææ„å‡½æ•°
 
 private:
-  string name;     //ĞÕÃû
-  myDate birthday; //ÉúÈÕ
+  string name;     //å§“å
+  myDate birthday; //ç”Ÿæ—¥
 };
 
-//¶¨Òå¹¹Ôìº¯Êı
-Student::Student() : name("NoName"), birthday(myDate()){};  //Ìí¼Ó,²»´ø²ÎÊı
-Student::Student(string n) : name(n), birthday(myDate()){}; //Ìí¼Ó,´øÒ»¸ö²ÎÊı
+//å®šä¹‰æ„é€ å‡½æ•°
+Student::Student() : name("NoName"), birthday(myDate()){};  //æ·»åŠ ,ä¸å¸¦å‚æ•°
+Student::Student(string n) : name(n), birthday(myDate()){}; //æ·»åŠ ,å¸¦ä¸€ä¸ªå‚æ•°
 
-//ÀàÌåÍâ¶¨Òå³ÉÔ±º¯Êı
-Student::Student(const Student &s) //×Ô¶¨Òå¸´ÖÆ¹¹Ôìº¯Êı
+//ç±»ä½“å¤–å®šä¹‰æˆå‘˜å‡½æ•°
+Student::Student(const Student &s) //è‡ªå®šä¹‰å¤åˆ¶æ„é€ å‡½æ•°
 {
   name = "Copy" + s.name;
   birthday = s.birthday;
@@ -117,30 +117,30 @@ myDate Student::getBirthday()
 }
 void Student::printStudent() const
 {
-  cout << "ĞÕÃû:" << name << "\tÉúÈÕ:";
-  birthday.printDate(); //µ÷ÓÃÀàmyDate µÄ³ÉÔ±º¯Êı
+  cout << "å§“å:" << name << "\tç”Ÿæ—¥:";
+  birthday.printDate(); //è°ƒç”¨ç±»myDate çš„æˆå‘˜å‡½æ•°
   cout << endl;
 }
-//¶¨ÒåÎö¹¹º¯Êı
+//å®šä¹‰ææ„å‡½æ•°
 myDate::~myDate()
 {
-  cout << "myDate Îö¹¹º¯Êı" << endl;
+  cout << "myDate ææ„å‡½æ•°" << endl;
 }
 Student::~Student()
 {
-  cout << "Student Îö¹¹º¯Êı" << endl;
+  cout << "Student ææ„å‡½æ•°" << endl;
 }
 int main()
 {
   Student stud;
-  stud.setName("444"); //ĞÕÃû¸ÄÎª444
+  stud.setName("444"); //å§“åæ”¹ä¸º444
   Student ss[2] = {stud, Student()};
   stud.printStudent();
   stud.setName("111");
-  ss[0] = Student(stud); //µ÷ÓÃ¸´ÖÆ¹¹Ôìº¯Êı
+  ss[0] = Student(stud); //è°ƒç”¨å¤åˆ¶æ„é€ å‡½æ•°
   ss[1] = Student();
   stud.printStudent();
-  ss[0].printStudent(); //ĞÕÃû Copy111
-  ss[1].printStudent(); //Ä¬ÈÏĞÂ¶ÔÏó
+  ss[0].printStudent(); //å§“å Copy111
+  ss[1].printStudent(); //é»˜è®¤æ–°å¯¹è±¡
   return 0;
 }

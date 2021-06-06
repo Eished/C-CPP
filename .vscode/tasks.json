@@ -3,7 +3,7 @@
     "version": "2.0.0",
     "tasks": [{
         "label": "Compile", // 任务名称，与launch.json的preLaunchTask相对应
-        "command": "gcc",   // 要使用的编译器，C++用g++
+        "command": "g++",   // 要使用的编译器，C++用g++；gcc：C；
         "args": [
             "${file}",
             "-o",    // 指定输出文件名，不加该参数则默认输出a.exe，Linux下默认a.out
