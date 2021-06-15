@@ -1,26 +1,26 @@
 #include <iostream>
 using namespace std;
-class myComplex //¸´ÊıÀà
+class myComplex //å¤æ•°ç±»
 {
 private:
-  double real, imag; //¸´ÊıµÄÊµ²¿ºÍĞé²¿
+  double real, imag; //å¤æ•°çš„å®éƒ¨å’Œè™šéƒ¨
 public:
   myComplex();
   myComplex(double r, double i);
-  ~myComplex() {}                                                       //²»ÄÜÓĞ·ÖºÅ
-  myComplex addCom(myComplex c1);                                       //³ÉÔ±º¯Êı, µ÷ÓÃÕß¶ÔÏóÓë²ÎÊı¶ÔÏócÏà¼Ó
-  void outCom();                                                        //³ÉÔ±º¯Êı, Êä³öµ÷ÓÃÕß¶ÔÏóµÄÓĞ¹ØÊı¾İ
-  void outCom(string s);                                                //³ÉÔ±º¯Êı, Êä³öµ÷ÓÃÕß¶ÔÏóµÄÓĞ¹ØÊı¾İ
-  void changeReal(double r);                                            //³ÉÔ±º¯Êı
-  myComplex operator-(const myComplex &c);                              //³ÉÔ± ÖØÔØº¯Êı
-  friend myComplex operator+(const myComplex &c1, const myComplex &c2); //ÓÑÔª ÖØÔØº¯Êı c1+c2
-  friend myComplex operator+(const myComplex &c1, double r);            //ÓÑÔª ÖØÔØº¯Êı c1+r
-  friend myComplex operator+(double r, const myComplex &c1);            //ÓÑÔª ÖØÔØº¯Êı r+c1
-  friend myComplex operator-(const myComplex &c1, const myComplex &c2); //ÓÑÔª ÖØÔØº¯Êı
-  friend myComplex operator-(const myComplex &c1, double r);            //ÓÑÔª ÖØÔØº¯Êı
-  friend myComplex operator-(double r, const myComplex &c1);            //ÓÑÔª ÖØÔØº¯Êı
-  myComplex &operator=(const myComplex &c);                             //³ÉÔ±º¯Êı
-  myComplex &operator=(double);                                         //³ÉÔ±º¯Êı
+  ~myComplex() {}                                                       //ä¸èƒ½æœ‰åˆ†å·
+  myComplex addCom(myComplex c1);                                       //æˆå‘˜å‡½æ•°, è°ƒç”¨è€…å¯¹è±¡ä¸å‚æ•°å¯¹è±¡cç›¸åŠ 
+  void outCom();                                                        //æˆå‘˜å‡½æ•°, è¾“å‡ºè°ƒç”¨è€…å¯¹è±¡çš„æœ‰å…³æ•°æ®
+  void outCom(string s);                                                //æˆå‘˜å‡½æ•°, è¾“å‡ºè°ƒç”¨è€…å¯¹è±¡çš„æœ‰å…³æ•°æ®
+  void changeReal(double r);                                            //æˆå‘˜å‡½æ•°
+  myComplex operator-(const myComplex &c);                              //æˆå‘˜ é‡è½½å‡½æ•°
+  friend myComplex operator+(const myComplex &c1, const myComplex &c2); //å‹å…ƒ é‡è½½å‡½æ•° c1+c2
+  friend myComplex operator+(const myComplex &c1, double r);            //å‹å…ƒ é‡è½½å‡½æ•° c1+r
+  friend myComplex operator+(double r, const myComplex &c1);            //å‹å…ƒ é‡è½½å‡½æ•° r+c1
+  friend myComplex operator-(const myComplex &c1, const myComplex &c2); //å‹å…ƒ é‡è½½å‡½æ•°
+  friend myComplex operator-(const myComplex &c1, double r);            //å‹å…ƒ é‡è½½å‡½æ•°
+  friend myComplex operator-(double r, const myComplex &c1);            //å‹å…ƒ é‡è½½å‡½æ•°
+  myComplex &operator=(const myComplex &c);                             //æˆå‘˜å‡½æ•°
+  myComplex &operator=(double);                                         //æˆå‘˜å‡½æ•°
 };
 myComplex::myComplex(double r, double i)
 {
@@ -50,31 +50,31 @@ void myComplex::changeReal(double r)
 }
 myComplex myComplex::operator-(const myComplex &c)
 {
-  return myComplex(this->real - c.real, this->imag - c.imag); //·µ»ØÒ»¸öÁÙÊ±¶ÔÏó
+  return myComplex(this->real - c.real, this->imag - c.imag); //è¿”å›ä¸€ä¸ªä¸´æ—¶å¯¹è±¡
 }
 myComplex operator+(const myComplex &c1, const myComplex &c2) //c1+c2
 {
-  return myComplex(c1.real + c2.real, c1.imag + c2.imag); //·µ»ØÒ»¸öÁÙÊ±¶ÔÏó
+  return myComplex(c1.real + c2.real, c1.imag + c2.imag); //è¿”å›ä¸€ä¸ªä¸´æ—¶å¯¹è±¡
 }
 myComplex operator+(const myComplex &c1, double r) //c1+r
 {
-  return myComplex(c1.real + r, c1.imag); //·µ»ØÒ»¸öÁÙÊ±¶ÔÏó
+  return myComplex(c1.real + r, c1.imag); //è¿”å›ä¸€ä¸ªä¸´æ—¶å¯¹è±¡
 }
 myComplex operator+(double r, const myComplex &c1) //r+c2
 {
-  return myComplex(r + c1.real, c1.imag); //·µ»ØÒ»¸öÁÙÊ±¶ÔÏó
+  return myComplex(r + c1.real, c1.imag); //è¿”å›ä¸€ä¸ªä¸´æ—¶å¯¹è±¡
 }
 myComplex operator-(const myComplex &c1, const myComplex &c2) //c1-c2
 {
-  return myComplex(c1.real - c2.real, c1.imag - c2.imag); //·µ»ØÒ»¸öÁÙÊ±¶ÔÏó
+  return myComplex(c1.real - c2.real, c1.imag - c2.imag); //è¿”å›ä¸€ä¸ªä¸´æ—¶å¯¹è±¡
 }
 myComplex operator-(const myComplex &c1, double r) //c1-r
 {
-  return myComplex(c1.real - r, c1.imag); //·µ»ØÒ»¸öÁÙÊ±¶ÔÏó
+  return myComplex(c1.real - r, c1.imag); //è¿”å›ä¸€ä¸ªä¸´æ—¶å¯¹è±¡
 }
 myComplex operator-(double r, const myComplex &c1) //r-c1
 {
-  return myComplex(r + c1.real, -c1.imag); //·µ»ØÒ»¸öÁÙÊ±¶ÔÏó
+  return myComplex(r + c1.real, -c1.imag); //è¿”å›ä¸€ä¸ªä¸´æ—¶å¯¹è±¡
 }
 myComplex &myComplex::operator=(const myComplex &c1)
 {
@@ -95,29 +95,29 @@ int main()
   c1.outCom("\t\t\tc1");
   c2.outCom("\t\t\tc2");
   res = c1 + c2;
-  res.outCom("Ö´ĞĞ res = c1 + c2 ¡ú\tres");
+  res.outCom("æ‰§è¡Œ res = c1 + c2 â†’\tres");
   res = c1.addCom(c2);
-  res.outCom("Ö´ĞĞ res = c1.addCom(c2) ¡ú\tres");
+  res.outCom("æ‰§è¡Œ res = c1.addCom(c2) â†’\tres");
   res = c1 + 5;
-  res.outCom("Ö´ĞĞ res = c1 + 5 ¡ú\tres");
+  res.outCom("æ‰§è¡Œ res = c1 + 5 â†’\tres");
   res = 5 + c1;
-  res.outCom("Ö´ĞĞ res = 5 + c1 ¡ú\tres");
+  res.outCom("æ‰§è¡Œ res = 5 + c1 â†’\tres");
   res = c1;
   c1.outCom("\t\t\tc1");
-  res.outCom("Ö´ĞĞ res = c1 ¡ú\tres");
+  res.outCom("æ‰§è¡Œ res = c1 â†’\tres");
   c1.changeReal(-3);
-  c1.outCom("Ö´ĞĞ changeReal(-3) ¡ú\tc1");
+  c1.outCom("æ‰§è¡Œ changeReal(-3) â†’\tc1");
   res.outCom("\t\t\tres");
   res = c1;
-  res.outCom("res = c1 ¡ú\tres");
+  res.outCom("res = c1 â†’\tres");
   res = 7;
-  res.outCom("res = 7 ¡ú\tres");
+  res.outCom("res = 7 â†’\tres");
   res = 7 + 8;
-  res.outCom("res = 7 + 8; ¡ú\tres");
+  res.outCom("res = 7 + 8; â†’\tres");
   res = c1 = c2;
   c1.outCom("\t\t\tc1");
   c2.outCom("\t\t\tc2");
-  res.outCom("res = c1 = c2 ¡ú\tres");
+  res.outCom("res = c1 = c2 â†’\tres");
 
   return 0;
 }

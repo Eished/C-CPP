@@ -2,17 +2,23 @@
 //
 
 #include <iostream>
-
+using namespace std;
+template <typename T>
+T abs(T x)
+{
+	return x < 0 ? -x : x;
+}
 int main()
 {
-    int i = 0;
-    int a = 1;
-    int *p = &i;
-    std::cout << "Hello World!\n";
+	int a[] = { 1,2,3,4 }, b = 2, c=0, * p = a;
+	//c = a++ + ++b;
+	++* ++p; // a={1, 3, 3, 4}
+	std::cout << c << " " << b; // 4 3
+	return 0;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
+ //调试程序: F5 或调试 >“开始调试”菜单
 
 // 入门使用技巧: 
 //   1. 使用解决方案资源管理器窗口添加/管理文件

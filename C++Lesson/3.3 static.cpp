@@ -6,11 +6,11 @@ void f()
 {
   int a = 1;
   static int fs = 1;
-  cout << "ÔÚfÖĞ:a(×Ô¶¯±äÁ¿)=" << a << " fs(¾²Ì¬)" << fs << " glos(¾²Ì¬)=" << glos << endl;
+  cout << "åœ¨fä¸­:a(è‡ªåŠ¨å˜é‡)=" << a << " fs(é™æ€)" << fs << " glos(é™æ€)=" << glos << endl;
   a += 2;
   fs += 2;
   glos += 10;
-  cout << "ÔÚfÖĞ:a(×Ô¶¯±äÁ¿)=" << a << " fs(¾²Ì¬)" << fs << " glos(¾²Ì¬)=" << glos << endl
+  cout << "åœ¨fä¸­:a(è‡ªåŠ¨å˜é‡)=" << a << " fs(é™æ€)" << fs << " glos(é™æ€)=" << glos << endl
        << endl;
 }
 int main()

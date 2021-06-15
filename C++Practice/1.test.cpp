@@ -58,4 +58,10 @@ int main()
   //   cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
   // }
   // cout << endl;
+
+  int i = 9;
+  int a = 1;
+  int *p = &i;
+  std::cout << **(&p);
+  std::cout << "Hello World!\n";
 }

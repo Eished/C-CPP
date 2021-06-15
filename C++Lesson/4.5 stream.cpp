@@ -1,5 +1,5 @@
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 #include <string>
 using namespace std;
 class myComplex
@@ -10,14 +10,14 @@ private:
 public:
   myComplex() : real(0), imag(0) {}
   myComplex(double r, double i) : real(r), imag(i) {}
-  friend ostream &operator<<(ostream &os, const myComplex &c); //ÓÑÔª,²åÈë
-  friend istream &operator>>(istream &is, myComplex &c);       //ÓÑÔª,ÌáÈ¡
+  friend ostream &operator<<(ostream &os, const myComplex &c); //å‹å…ƒ,æ’å…¥
+  friend istream &operator>>(istream &is, myComplex &c);       //å‹å…ƒ,æå–
 };
 ostream &operator<<(ostream &os, const myComplex &c)
 {
   if (c.imag >= 0)
   {
-    os << c.real << "+" << c.imag << "i"; //ÒÔ a+bi µÄĞÎÊ½ÊäÈë
+    os << c.real << "+" << c.imag << "i"; //ä»¥ a+bi çš„å½¢å¼è¾“å…¥
   }
   else
   {
@@ -28,13 +28,13 @@ ostream &operator<<(ostream &os, const myComplex &c)
 istream &operator>>(istream &is, myComplex &c)
 {
   string s;
-  is >> s;                  //½«a+bi ×÷Îª×Ö·û´®¶ÁÈë,a+biÖĞ¼ä²»ÄÜÓĞ¿Õ¸ñ
-  int pos = s.find("+", 0); //²éÕÒĞé²¿
+  is >> s;                  //å°†a+bi ä½œä¸ºå­—ç¬¦ä¸²è¯»å…¥,a+biä¸­é—´ä¸èƒ½æœ‰ç©ºæ ¼
+  int pos = s.find("+", 0); //æŸ¥æ‰¾è™šéƒ¨
   if (pos == -1)
-    pos = s.find("-", 1);                      //Ğé²¿Îª¸ºÊıÊ±
-  string sReal = s.substr(0, pos);             //·ÖÀë³ö´ú±íÊµ²¿µÄ×Ö·û´®
-  c.real = atof(sReal.c_str());                //atof() ÄÜ½«²ÎÊıÄÚÈİ×ª»»³É¸¡µãÊı
-  sReal = s.substr(pos, s.length() - pos - 1); //·ÖÀë³ö´ú±íĞé²¿µÄ×Ö·û´®
+    pos = s.find("-", 1);                      //è™šéƒ¨ä¸ºè´Ÿæ•°æ—¶
+  string sReal = s.substr(0, pos);             //åˆ†ç¦»å‡ºä»£è¡¨å®éƒ¨çš„å­—ç¬¦ä¸²
+  c.real = atof(sReal.c_str());                //atof() èƒ½å°†å‚æ•°å†…å®¹è½¬æ¢æˆæµ®ç‚¹æ•°
+  sReal = s.substr(pos, s.length() - pos - 1); //åˆ†ç¦»å‡ºä»£è¡¨è™šéƒ¨çš„å­—ç¬¦ä¸²
   c.imag = atof(sReal.c_str());
   return is;
 }
@@ -42,7 +42,7 @@ int main()
 {
   myComplex c, c1;
   int n;
-  cout << "ÇëÊäÈëÁ½¸ö¸´Êı([-]a¡Àbi)ºÍÒ»¸öÕûÊı, ÒÔ¿Õ¸ñ·Ö¸ô" << endl;
+  cout << "è¯·è¾“å…¥ä¸¤ä¸ªå¤æ•°([-]aÂ±bi)å’Œä¸€ä¸ªæ•´æ•°, ä»¥ç©ºæ ¼åˆ†éš”" << endl;
   cin >> c >> c1 >> n;
   cout << c << "," << n << "," << c1;
   return 0;
