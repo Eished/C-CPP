@@ -26,35 +26,36 @@ int main()
   //   }
   //   cout << endl;
   // }
-  vector<int> vec = {1, 2, 3, 4};
-  // 先查看大小，自动扩容
-  for (int i = 0; i < vec.size(); i++)
-  {
-    cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
-  }
-  cout << "尾部插入" << endl;
-  vec.push_back(5); // 尾部插入
-  for (int i = 0; i < vec.size(); i++)
-  {
-    cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
-  }
-  cout << "尾部删除" << endl;
-  vec.pop_back(); // 从尾部删除
-  for (int i = 0; i < vec.size(); i++)
-  {
-    cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
-  }
-  cout << "指定位置插入" << endl;
-  vec.insert(vec.end() - 1, 6); // 指定位置插入
-  for (int i = 0; i < vec.size(); i++)
-  {
-    cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
-  }
-  cout << "指定位置删除" << endl;
-  vec.erase(vec.end() - 2); // 指定位置删除
-  for (int i = 0; i < vec.size(); i++)
-  {
-    cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
-  }
-  cout << endl;
+
+  // vector<int> vec = {1, 2, 3, 4};
+  // // 先查看大小，自动扩容
+  // for (int i = 0; i < vec.size(); i++)
+  // {
+  //   cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
+  // }
+  // cout << "尾部插入" << endl;
+  // vec.push_back(5); // 尾部插入
+  // for (int i = 0; i < vec.size(); i++)
+  // {
+  //   cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
+  // }
+  // cout << "尾部删除" << endl;
+  // vec.pop_back(); // 从尾部删除
+  // for (int i = 0; i < vec.size(); i++)
+  // {
+  //   cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
+  // }
+  // cout << "指定位置插入" << endl;
+  // vec.insert(vec.end() - 1, 6); // 指定位置插入
+  // for (int i = 0; i < vec.size(); i++)
+  // {
+  //   cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
+  // }
+  // cout << "指定位置删除" << endl;
+  // vec.erase(vec.end() - 2); // 指定位置删除
+  // for (unsigned int i = 0; i < vec.size(); i++)
+  // {
+  //   cout << vec[i] << " " << vec.capacity() << " " << vec.size() << endl;
+  // }
+  // cout << endl;
 }
