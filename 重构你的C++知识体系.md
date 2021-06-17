@@ -1362,77 +1362,224 @@ std::cout<<"";
 
 ## 7-1 从抽象到面向对象编程
 
+- C++使用 struct、cass来定义一个类：
+
+  - **struct 的默认成员权限是 public，**
+
+  - **class 的默认成员权限是 private**，
+
+    除此之外，二者基本无差别
+
+7-2 面向对象的抽象法则1-具体类型的抽象
 
 
-## 7-2 面向对象的抽象法则1-具体类型的抽象
 
-
-
-## 7-3 对象的属性
+7-3 对象的属性
 
 
 
 ## 7-4 运算符重载
 
+```C++
+#include <iostream>
+using namespace std;
+class myComplex //复数类
+{
+private:
+  double real, imag; //复数的实部和虚部
+public:
+  myComplex();
+  myComplex(double r, double i);
+  myComplex addCom(myComplex c);                                        //成员函数, 调用者对象与参数对象c相加
+  void outCom();                                                        //成员函数, 输出调用者对象的有关数据
+  myComplex operator-(const myComplex &c);                              //成员 重载函数
+  friend myComplex operator+(const myComplex &c1, const myComplex &c2); //友元 重载函数
+};
+myComplex::myComplex(double r, double i)
+{
+  real = r;
+  imag = i;
+}
+myComplex::myComplex()
+{
+  real = 0;
+  imag = 0;
+}
+myComplex myComplex::addCom(myComplex c)
+{
+  return myComplex(real + c.real, imag + c.imag);
+}
+void myComplex::outCom()
+{
+  cout << "(" << real << "," << imag << ")";
+}
+myComplex myComplex::operator-(const myComplex &c)
+{
+  return myComplex(this->real - c.real, this->imag - c.imag); //返回一个临时对象
+}
+myComplex operator+(const myComplex &c1, const myComplex &c2)
+{
+  return myComplex(c1.real + c2.real, c1.imag + c2.imag); //返回一个临时对象
+}
+
+int main()
+{
+  myComplex c1(1, 2), c2(3, 4), res;
+  c1.outCom();
+  cout << "operator+";
+  c2.outCom();
+  cout << "=";
+  res = c1 + c2;
+  res.outCom();
+  cout << endl;
+  c1.outCom();
+  cout << "operator-";
+  c2.outCom();
+  cout << "=";
+  res = c1 - c2;
+  res.outCom();
+  cout << endl;
+  return 0;
+}
+```
+
 
 
 ## 7-5 拷贝构造及临时对象的优化
 
+```C++
+Complex Complex operator+(const Complex& x)
+{
+	Complex tmp;
+	tmp.real real + x.real;
+	tmp image = image + x image;
+	return tmp;
+}
+
+// 优化, 去掉调用复制构造函数的临时对象
+Complex Complex operator+(const Complex& x)
+{
+return Complex(real + x.real, image +x.image);
+}
+```
 
 
-## 7-6 前置与后置操作符
+
+7-6 前置与后置操作符
 
 
 
 ## 7-7 标准输入输出IO重载
 
+1. 传统的 C 中 I/O 有 printf，scanf，getch，gets 等函数，它们的问题是
 
+   1. 不可编程，仅仅能识别固有的数据类型；
+   2. 代码的可移植性差，有很多的坑；
+
+2. C++中的 I/O 流 istream，ostream 等  
+
+   1. 可编程，对于类库的而设计者来说很有用；
+   2. 简化编程，能使得 I/O 的风格一致；
+
+   ![image-20210617220542688](重构你的C++知识体系.assets/image-20210617220542688.png)
+
+   
 
 ## 7-8 IO流基础
 
+7-9 IO缓存区
 
+1. 标准O提供的三种类型的缓存模式：
 
-## 7-9 IO缓存区
+   1. 按**块缓存**：如文件系统；
+   2. 按**行缓存**：\n；
+   3. **不缓存**；
 
+   ![image-20210617220811295](重构你的C++知识体系.assets/image-20210617220811295.png)
 
+2. 缓存区
+
+   1. `cin.ignore(numeric_limits<std::streamsize>max(),'\n'); // 清空 cin 缓存区脏数据` 清空缓存区最大值
 
 ## 7-10 文件操作基础
 
+1. 输入流的起点和输出流的终点都可以是磁盘文件；
+   1. 文件：C++把每个文件都看成是一个有序的字节序列，每个文件都以**文件结束标志**结束。
+   2. 按照文件中数据的组织形式可把文件分成为：
+      1. **文本文件**：文件中信息形式为ASCⅡ 码文件，每个字符占一个字节；
+      2. **二进制文件**：文件中信息的形式与其在内存中的形式相同
+2. 文件操作步骤，对于文件操作要做以下事情：
+   1. 打开文件用于读和写 `open`；
+   2. 检查打开是否成功 `fail`
+   3. 读或者写 `read，write`
+   4. 检查是否读完 `EOF`（end of file）；
+   5. 使用完文件后关闭文件 `close`；
+3. 文本文件的操作
+4. 二进制文件的操作
 
 
-## 7-11 文本文件的操作
 
-
-
-## 7-12 二进制文件的操作
-
-
-
-## 7-13 Complex其他运算符重载
+7-13 Complex其他运算符重载
 
 
 
 ## 7-14 头文件重复包含问题
 
+1. 为了避免同一个文件被 include多次，有两种方式
 
+   `#ifndef Somefile_H_`
 
-## 7-15 关于前七章的练习题及答案
+   `#define Somefile_H_`
+   `#endif` 使用宏来防止同一个文件被多次包含；
+
+   - 优点：可移植性好；
+   - 缺点：**无法防止宏名重复，难以排错**；
+
+2. `#pragma once` 
+
+   使用**编译器**来防止同一个文件被多次包含；
+
+   - 优点：**可以防止宏名重复，易排错**；
+   - 缺点：可移植性不好；
+
+7-15 关于前七章的练习题及答案
 
 
 
 ## 7-16 深拷贝浅拷贝及move语义的优化
 
+- 浅拷贝：
+  - 只拷贝指针地址，C++默认拷贝构造函数与赋值运算符重载都是浅拷贝；
+  - 节省空间，但容易引发多次释放；
+- 深拷贝：
+  - 重新分配堆內存，拷贝指针指向内容。
+  - 浪费空间，但不会导致多次释放；
+- 怎么兼有二者的优点？
+  - 方案一：引用计数；
+  - 方案二：C++新标准的移动语义；
+    - `move` 资源让渡
+
+7-17 面向对象的抽象法则2
 
 
-## 7-17 面向对象的抽象法则2
 
-
-
-## 7-18 Hack对象模型和虚函数
+7-18 Hack对象模型和虚函数
 
 
 
 ## 7-19 面向对象三大特性及总结
+
+1. **封装性**：
+   - 数据和代码捆绑在一起，避免外界干扰和不确定性访问，封装可以使得代码模块化；
+2. **继承性**：
+   - 让某种类型对象获得另一个类型对象的属性和方法，继承可以扩展已存在的代码；多
+3. **多态性**：
+   - 同一事物表现出不同事物的能力，即向不同对象会产生不同的行为，多态的目的则是为了接口重用；
+
+- 面向对象到底是什么
+  - 面向对象是软件工程发展到一定阶段为了**管理代码和数据**提出的一种方法，它没有解决以前解决不了的问题，不是万能的；
+  - 面向对象不是对现实世界的映射；但它的**封装性可以把问题简化**，便于抽象它的继承可以**减少代码重复**，避免重新发明轮子它的多态可以实现灵活的功能扩充，提升开发效率；
+  - 面向对象为我们便捷的开发出能适应变化的软件提供了可能，但还不够
 
 
 
