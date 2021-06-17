@@ -531,9 +531,45 @@ wchar_t w[10]=L"a";
     - 编码错误的根本原因在于编码方式和解码方式的不统一；
     - Windows的文件可能BOM（byte order mark）如要在其他平台使用，可以去掉BOM
 
-4-7 Unicode编码
+## 4-7 Unicode编码
+
+C++转义序列的编码
+
+| 字符名称   | ASCII 符号 | C++代码 | 十进制 ASCII 码 | 十六进制 ASCII 码 |
+| :--------- | :--------- | :------ | :-------------- | :---------------- |
+| 换行符     | NL(LF)     | \n      | 10              | 0xA               |
+| 水平制表符 | HT         | \t      | 9               | 0x9               |
+| 垂直制表符 | VT         | \v      | 11              | 0xB               |
+| 退格       | BS         | \b      | 8               | 0x8               |
+| 回车       | CR         | \r      | 13              | 0xD               |
+| 振铃       | BEL        | \a      | 7               | 0x7               |
+| 反斜杠     | \          | \\      | 92              | 0x5C              |
+| 问号       | ?          | \?      | 63              | 0x3F              |
+| 单引号     | '          | \'      | 39              | 0x27              |
+| 双引号     | "          | \"      | 34              | 0x22              |
+
+**欧拉公式**
+
+$e^{πi}+1=0$
 
 
+
+**无符号数的编码**
+用一个函数 B2Uw（Binary to Unsigned的缩写，长度为 w）来表示：
+
+![image-20210617021008259](重构你的C++知识体系.assets/image-20210617021008259.png)
+
+
+
+**有符号数的补码**
+用函数 B2Tw(Binary to Two’s-complement 的缩写，长度为 w)来表示：
+
+![image-20210617020952360](重构你的C++知识体系.assets/image-20210617020952360.png)
+
+**字节序**
+
+- Big Endian
+- Little Endian
 
 ##  4-8 字符串的指针表示
 
@@ -859,47 +895,321 @@ wchar_t w[10]=L"a";
 
 ## 5-10 CPP程序的存储区域划分
 
+- 每行代码在内存单元中的地址位置
 
+  ```C++
+  #include <iostream>
+  using namespace std;
+  int a = 0;			// （GVAR)全局初始化区
+  int* p1;			// （bss）全局未初始化区
+  int main()
+  {
+  	int b = 1;				// （stack）栈区变量
+  	char s[] = "abc";		// （stack）栈区变量
+  	int* p2 = NULL;			// （stack）栈区变量
+  	const char* p3 = "123456"; //123456\0在常量区，p3在（stack）栈区
+  	static int c = 0;		// （GVAR全局（静态）初始化区
+  	p1 = new int(10);		// （heap）堆区变量
+  	p2 = new int(20);		// （heap）堆区变量
+  	char* p4 = new char[7]; // （heap）堆区变量
+  	strcpy_s(p4, 7, "123456");
+  	c = 1;
+  	return 0;
+  }
+  ```
 
+![image-20210616151449502](重构你的C++知识体系.assets/image-20210616151449502.png)
 
+5-11 CPP程序的存储区域划分总结
 
-## 5-11 CPP程序的存储区域划分总结
+## 5-11 **内存分区模型**
+
+- 代码区：存放函数体的二进制代码，由操作系统管理
+- 全局区：存放全局变量、静态变量以及常量
+- 栈区：由编译器自动分配释放，存放函数参数值、局部变量等
+- 堆区：由程序员分配、翻译，若程序员不翻译，程序结束时由操作系统回收
 
 
 
 ## 5-12 CPP动态分配和回收原则
 
+- 动态分配资源-**堆（heap）**
 
+  1. 从现代的编程语言角度来看，使用堆，或者说使用动态内存分配，是一件很自然不过的事情。
+  2. 动态内存带来了不确定性：内存分配耗时需要多久？失败了怎么办？
+     在实时性要求比较高的场合，如一些嵌入式控制器和电信设备。
+  3. 一般而言，当我们在堆上分配内存时，很多语言会使用new这样的关键字，有些语言则是隐式分配。在C++中new的对应词是 delete，因为C++是可以让程序员完全接管内存的分配释放的。
+
+- 程序通常需要牵涉到三个内存管理器的操作
+
+  1. **分配一个某个大小的内存块**
+
+  2. **释放一个之前分配的内存块；**
+
+  3. 垃圾收集操作，寻找不再使用的内存块并予以释放；
+
+     这个回收策略需要实现性能、实时性、额外开销等各方面的平衡，很难有统一和高效的做法；
+
+     C++做了1，2两件事；而Java则做了1，3两件事；
 
 ## 5-13 RAII初步
 
+资源管理方案-**RAII（Resource Acquisition Is Initialization）**
 
+- C++所特有的资源管理方式。有少量其他语言，如D、Ada和Rust也采纳了 RAII 。但主流的编程语言中，**C++是唯一一个依赖 RAII 来做资源管理的**。
+- **RAII 依托栈和析构函数**，来对所有的资源——包括堆內存在内进行管理。对 RAII 的使用，使得C++不需要类似于Java那样的垃圾收集方法，也能有效地对內存进行管理。 RAII 的存在，也是垃圾收集虽然理论上可以在C++使用，但从来没有真正流行过的主要原因。
+-  RAII 有些比较成熟的智能指针代表：如`std::auto_ptr`和 `boost:shared_ptr`
 
 ## 5-14 几种变量的对比
+
+**栈和堆中的变量对比**
+
+|                | 栈（stack）区                                                | 堆（heap）区                                             |
+| -------------- | ------------------------------------------------------------ | -------------------------------------------------------- |
+| 作用域         | 函数体内，语句块{}作用域                                     | 整个程序范围内，由 new，malloc 开始，delete，free 结束； |
+| 编译间大小确定 | 变量大小范围确定                                             | 变量大小范围不确定，需要运行期间确定                     |
+| 大小范围       | Windows 系统默认栈大小是 1M，Linux 常见默认的栈大小是 8M或10M（`ulimit-s` 查看，不同版本命令不同） | 所有系统的堆空间上限是接近内存（虚拟内存）的总大小的；   |
+| 内存分配方式   | 地址由高到低减少                                             | 地址由低到高增加                                         |
+| 内容是否可变   | 可变                                                         | 可变                                                     |
+
+**全局静态存储区和常量存储区的变量对比**
+
+|                      | 全局静态存储区     | 常量存储区 |
+| -------------------- | ------------------ | ---------- |
+| 存储内容             | 全局变量，静态变量 | 常量       |
+| 编译期间大小是否确定 | 确定               | 确定       |
+| 内容是否可变         | 可变               | 不可变     |
 
 
 
 ## 5-15 内存泄漏
 
-
+- **内存泄漏（Memory Leak）**问题
+  - 什么是内存泄漏问题：**指程序中己动态分配的堆内存由于某种原因程序未释放或无法释放，造成系统内存的浪费，导致程序运行速度减慢甚至系统崩溃等严重后果.**
+  - 内存泄漏发生原因和排查方式：
+    1. 内存泄漏主要发生在**堆内存分配**方式中，即“配置了内存后，所有指向该内存的指针都遗失了”。若缺乏语言这样的垃圾回收机制，这样的内存片就无法归还系统。
+    2. 因为内存泄漏属于程序运行中的问题，无法通过编译识别，所以**只能在程序运行过程中来判别和诊断。**
 
 ## 5-16 智能指针auto_ptr
 
+- 比指针更安全的解决方案
+  使用指针是非常危险的行为，可能存在空指针，野指针问题并可能造成内存泄漏问题。
+  可指针又非常的高效，所以我们希望以更安全的方式来使用指针。
 
+  - 一般有两种典型的方案：
+    1. **使用更安全的指针一智能指针；**
+    2. 不使用指针，使用更安全的方式-引用；
 
-## 5-17 智能指针unique_ptr
+- C++中推出了四种常用的智能指针
+  `unique_ptr、shared ptr、weak_ptr` 和C++11中已经**废弃**`（deprecated）的 auto ptr`，在C++17中被正式删除；
 
+- 这里，我们从应用方面来分析这几种智能指针
 
+  1. 应用场景
+     - 对象所有权
+     - 生命周期；
+  2. 性能分析；
 
-## 5-18 shared_ptr和weak_ptr理论讲解
+-  **auto_ptr：**
 
+  ![image-20210616164751511](重构你的C++知识体系.assets/image-20210616164751511.png)
 
+  - 由 `new expression` 获得对象，在 `auto_ptr` 对象销毁时，他所管理的对象也会自动被 `delete` 掉。
+  - 所有权转移：不小心把它传递给另外的智能指针，原来的指针就不再拥有这个对象了在拷贝/赋值过程中，会直接**剥夺指针对原对象对内存的控制权**，转交给新对象，然后再将原对象指针置为 `nullptr`。
 
-## 5-19 shared_ptr和weak_ptr代码演示
+  ```C++
+  #include <iostream>
+  #include <string>
+  #include <memory>
+  using namespace std;
+  int a = 0;			// （GVAR)全局初始化区
+  int* p1;			// （bss）全局未初始化区
+  int main()
+  {
+  	int b = 1;				// （stack）栈区变量
+  	char s[] = "abc";		// （stack）栈区变量
+  	int* p2 = NULL;			// （stack）栈区变量
+  	const char* p3 = "123456"; //123456\0在常量区，p3在（stack）栈区
+  	static int c = 0;		// （GVAR全局（静态）初始化区
+  	p1 = new int(10);		// （heap）堆区变量
+  	p2 = new int(20);		// （heap）堆区变量
+  	char* p4 = new char[7]; // （heap）堆区变量
+  	strcpy_s(p4, 7, "123456");
+  	c = 1;
+  	auto_ptr<string>p9(new string("C++"));
+  	std::cout << *p9;
+  	return 0;
+  }
+  ```
+
+  
+
+## 5-17 智能指针 unique_ptr
+
+- **`unique_ptr:`**
+
+  ![image-20210616231240853](重构你的C++知识体系.assets/image-20210616231240853.png)
+
+  - `unique_ptr`是专属所有权，所以 `unique_ptr`管理的内存，**只能被一个对象持有，不支持复制和赋值。**
+  - 移动语义：`unique_ptr`禁止了拷贝语义，但有时我们也需要能够转移所有权，于是提供了移动语义，即可以使用`std::move()`进行控制所有权的转移。
+
+  ```C++
+  #include <iostream>
+  #include <string>
+  #include <memory>
+  using namespace std;
+  int main()
+  {
+  	// unique_ptr
+  	auto w = std::make_unique<int>(10);
+  	cout << *(w.get()) << endl;
+  	//auto w2 = w; // 编译错误如果想要把w复制给w2，是不可以的。
+  	//因为复制从语义上来说，两个对象将共享同一块内存
+  
+  	//unique ptr只支持移动语义，即如下
+  	auto w2 = std::move(w);
+  	cout << ((w.get() != nullptr) ? (*w.get()) : -1) << endl;
+  	cout << ((w2.get() != nullptr) ? (*w2.get()) : -1) << endl;
+  	return 0;
+  }
+  ```
+
+  - 以大括号为有效范围，超出失效。块作用域。
+
+## 5-18 shared_ptr 和 weak_ptr 理论讲解
+
+- **`shared_pt`** 通过一个引用计数共享一个对象。
+
+  ![image-20210616233840459](重构你的C++知识体系.assets/image-20210616233840459.png)
+
+  - `shared_ptr`是为了解决 `auto_ptr`在对象所有权上的局限性，在使用**引用计数的机制**上提供了可以共享所有权的智能指针，当然这需要额外的开销。
+  - 当引用计数为`0`时，该对象没有被使用，可以进行**析构**。
+
+- 循环引用：**引用计数会带来循环引用的问题**
+
+  - 循环引用会导致堆里的内存无法正常回收，造成内存泄漏。
+
+  ![image-20210616234259086](重构你的C++知识体系.assets/image-20210616234259086.png)
+
+- **`weak_ptr`** 被设计为与 `shared_ptr` 共同工作，**用一种观察者模式工作**。
+
+  ![image-20210616234851389](重构你的C++知识体系.assets/image-20210616234851389.png)
+
+  - 作用是协助 `shared_ptr` 工作，可获得资源的观测权像旁观者那样观测资源的使用情况。
+  - 观察者意味着`weak_ptr`只对 `shared_ptr` 进行引用，而不改变其引用计数，当被观察的 `shared_ptr`失效后，相应的 `weak_ptr`也相应失效。
+
+- `shared_ptr` 支持`std::move()`
+
+**5-19 shared_ptr 和 weak_ptr 代码演示**
+
+```C++
+	{
+		auto wA = shared_ptr<int>(new int(20));
+		{
+			auto wB = wA;
+			cout << ((wA.get() != nullptr) ? (*wA.get()) : -1) << endl; //20
+			cout << ((wB.get() != nullptr) ? (*wB.get()) : -1) << endl; //20
+			cout << wA.use_count() << endl; //2
+			cout << wB.use_count() << endl; //2
+		}
+		//cout << wB.use_count() << endl;
+		cout << wA.use_count() << endl;
+	}
+```
+
+**避免循环引用代码**
+
+```C++
+#include <iostream>
+#include <string>
+#include <memory>
+using namespace std;
+
+struct B;
+struct A {
+	shared_ptr<B>pb;
+	~A() {
+		cout << "~A" << endl;
+	}
+};
+struct B
+{
+	shared_ptr<A>pa;
+	~B() {
+		cout << "~B" << endl;
+	}
+};
+struct BW;
+struct AW {
+	shared_ptr<BW>pb;
+	~AW() {
+		cout << "~AW" << endl;
+	}
+};
+
+struct BW
+{
+	weak_ptr<AW>pa;
+	~BW() {
+		cout << "~BW" << endl;
+	}
+};
+// pa和pb存在着循环引用，根据 shared_ptr引用计数的原理，pa和pb都无法被正常的释放
+// weak ptr是为了解决 shared ptr双向引用的问题
+void Test() {
+	cout << "Test shared_ptr and shared_ptr:" << endl;
+	shared_ptr<A>tA(new A());
+	shared_ptr<B>tB(new B());
+	cout << tA.use_count() << endl; // 1
+	cout << tB.use_count() << endl; // 1
+	tA->pb = tB;
+	tB->pa = tA;
+	cout << tA.use_count() << endl; // 2
+	cout << tB.use_count() << endl; // 2
+};
+
+void Test2() {
+	cout << "Test weak_ptr and shared_ptr:" << endl;
+	shared_ptr<AW>tA(new AW());
+	shared_ptr<BW>tB(new BW());
+	cout << tA.use_count() << endl; // 1
+	cout << tB.use_count() << endl; // 1
+	tA->pb = tB;
+	tB->pa = tA;
+	cout << tA.use_count() << endl; // 1
+	cout << tB.use_count() << endl; // 2
+};
+int main()
+{
+
+	Test();
+	Test2();
+}
+```
 
 
 
 ## 5-20 引用
+
+- 引用是什么？
+  - 是一种特殊的指针，**不允许修改的指针。**
+- 使用指针有哪些坑:
+  - 空指针;
+  - 野指针；
+  - 不知不觉改变了指针的值，却继续使用；
+- 使用引用，则可以:
+  - **不存在空引用；**
+  - **必须初始化;**
+  - **一个引用永远指向它初始化的那个对象;**
+- 有了指针为什么还需要引用？
+  - Bjarne stroustrup的解释
+  - 为了支持**函数运算符重载**；
+- 有了引用为什么还需要指针？
+  - Bjarne Stroustrup的解释
+  - 为了**兼容C语言**；
+- 补充，关于函数传递参数类型的说明
+  1. 对内置**基础类型**（如 int，double等）而言，在函数中传递时 **传值(pass by value)** 更高效
+  2. 对OO**面向对象**中自定义类型而言，在函数中传递时 **传引用(pass by reference to const)** 更高效；
 
 
 
@@ -907,79 +1217,138 @@ wchar_t w[10]=L"a";
 
 深入讲解基本语句：赋值语句，判断语言，循环语言for, while；深入讲解基本数据与结构，枚举，结构体和联合体；深入讲解函数，递归函数的来龙去脉；浅析类与面向对象的概念；谈谈命名空间的使用。
 
-## 6-1 图灵机与三种基本结构
+6-1 图灵机与三种基本结构
 
 
 
-## 6-2 if语句基础
+6-2 if语句基础
 
 
 
-## 6-3 if语句的例子
+6-3 if语句的例子
 
 
 
-## 6-4 switch分支基础
+6-4 switch分支基础
 
 
 
-## 6-5 switch和if的对比
+6-5 switch和if的对比
 
 
 
-## 6-6 自定义类型--枚举
+6-6 自定义类型--枚举
 
 
 
-## 6-7 自定义类型--结构体与联合体
+6-7 自定义类型--结构体与联合体
 
 
 
-## 6-8 结构体的内存布局
+6-8 结构体的内存布局
 
 
 
-## 6-9 三种循环的基本使用与比较
+6-9 三种循环的基本使用与比较
 
 
 
-## 6-10 for循环的一个优化实例
+6-10 for循环的一个优化实例
 
 
 
-## 6-11 函数基础
+6-11 函数基础
 
 
 
 ## 6-12 函数重载overload与Name Mangling
 
+- 返回类型：一个函数可版回一个值
+- 函数名称：这是函数的实际名称，**函数名和参数列表一起构成了函数签名**。
+- 参数：参数列表包括函数参数型、顺序、数量参数是可选的也就是说，函数可能不包含参数
+- 函数主体：函数主体包含一组定义函数执行任务的语句
+
 
 
 ## 6-13 指向函数的指针与返回指针的函数
 
+- 指向函数的指针
 
+  ```C++
+  int (*p)(int);
+  p=func;
+  ```
+
+  
 
 ## 6-14 命名空间。
 
+```C++
+using namespace std;
+
+std::cout<<"";
+```
 
 
-## 6-15 函数体的Hack过程
+
+6-15 函数体的Hack过程
 
 
 
 ## 6-16 内联函数。
 
+- 如果一个函数是内联的，那么在编译时，编译器会把该函数的代码副本放置在每个调用该函数的地方。
+- 引入内联函数的目的是为了解决程序中函数调用的效率问题（空间换时间）
+  - 注意：内联函数内部不能有太复杂的逻辑，编译器有时会有自己的优化策略，所以内联不一定起作用
 
+![image-20210617164318813](重构你的C++知识体系.assets/image-20210617164318813.png)
+
+![image-20210617164448957](重构你的C++知识体系.assets/image-20210617164448957.png)
 
 ## 6-17 数学归纳法与递归
 
+- 从数学归纳法说起
 
+  数学归纳法是证明当n等于任意一个自然数时某命题成立证明步骤分两步：
+
+  1. 证明当n=1时命题成立；
+  2. 假设n=m时命题成立，那么可以推导出在n=m+1时命题也成立（m代表任意自然数）；
+
+- 证明世界上所有的人都是秃子：
+
+  我们知道：
+
+  1. 0根头发的人是秃子，有1根头发的人也是秃子
+  2. 假设有n根头发的人是秃子；那么有n+1根头发的人也是秃子；所以，所有人都是秃子；
+
+![image-20210617165343966](重构你的C++知识体系.assets/image-20210617165343966.png)
+
+- 重复运算，时间和空间大量浪费
+
+- 递归的四个基本法则
+
+  1. 基准情形：无须递归就能解出；
+  2. 不断推进：每一次递归调用都必须使求解状况朝接近基准情形的方向推进
+  3. 设计法则：假设所有的递归调用都能运行；
+  4. **合成效益法则（compound interest rule）**：求解一个问题的同一个实例时，切勿在不同的递归调用中做重复性的工作；
+
+  由此可见，使用递归来计算诸如斐波那契数列数列并不是一个好主意；
+
+  
 
 ## 6-18 递归的特点和Hack过程
 
+- 递归是一种重要的编程思想：
+  1. 很多重要的算法都包含递归的思想；
+  2. 递归最大的缺陷：
+     1. 空间上需要开辟大量的栈空间；
+     2. 时间上可能需要有大量重复运算；
+- 递归的优化
+  1. **尾递归**：所有递归形式的调用都出现在函数的末尾；
+  2. **使用循环替代；**
+  3. **使用动态规划，空间换时间；**
 
-
-## 6-19 尾递归的优化
+6-19 尾递归的优化
 
 
 
@@ -1389,3 +1758,147 @@ wchar_t w[10]=L"a";
 总结C++基础知识在项目中的应用，项目中可能的坑和存在改善的问题；
 
  16-1 课程总结
+
+推荐书籍：
+
+入门：
+
+《C++ Primer》 Stanley B.Lippman
+
+最佳实践：
+
+《C++高质量编程》 林锐
+
+《Effective C++》侯捷（译）
+
+《More Effective C++》侯捷（译）
+
+《Effective STL》潘爱民（译）
+
+《The C++ Programming Language》 Bjarne Stroustrup
+
+深入：
+
+《STL 源码剖析》侯捷
+
+《COM 本质论》Don Box
+
+《Exeptional C++》Addsion. Wesley
+
+《Inside the C++ Object Model》Stanley B.Lippman
+
+《The Design and Evolution of C++》Bjarne Stroustrup
+
+ 
+
+Source Insight
+
+http://download.qt.io/official_releases/qt/
+
+
+
+![2020 重学C++ 重构你的C++知识体系笔记](https://alanhou.org/homepage/wp-content/uploads/2020/05/2020092905301871.jpg)
+
+编译：`Tokenization -> Syntax analysis -> Semantic analysis -> Intermediate code generation -> Optimization -> Machine code generation`
+
+```shell
+# 生成待编译源码，这一步骤不进行语法检查，对宏定义的内容进行简单替换
+g++ -E main.cpp
+# 编译为对象文件
+g++ -c main.cpp
+# 查看编译对象文件
+nm -C main.o
+g++ -std=c++11 main.cpp # 使用 C++ 11标准
+g++ -I头文件
+g++ -L链接文件
+\033[xx;xxm # 设置颜色、背景
+\033[0m # 重置
+```
+
+Google测试框架：https://github.com/google/googletest
+
+
+
+**一段说明运算符重载、友元函数、类、构造函数、析构函数、指针、引用、浅拷贝、深拷贝等内容的示例代码：**
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+// 自定义整型类
+class MyInteger{
+    // 友元函数声明
+    friend ostream& operator<<(ostream& cout, MyInteger myInt);
+public:
+    // 无参构造函数
+    MyInteger(){
+        mNum = 0;
+    }
+    // 有参构造函数
+    MyInteger(int num) {
+        mRefNum = new int(num);
+    }
+    // 析构函数，清空堆区空间
+    ~MyInteger(){
+        if(mRefNum !=NULL){
+            delete mRefNum;
+            mRefNum = NULL;
+        }
+    }
+    // 重载前置运算符++，需返回引用，这样才能兼容++(++myInt)这样的形式
+    MyInteger& operator++(){
+        mNum++;
+        return *this;
+    }
+    // 重载后置运算符++
+    MyInteger operator++(int){
+        MyInteger temp = *this;
+        mNum++;
+        return temp;
+    }
+    // 重载赋值运算符（默认为浅拷贝，重载为深拷贝，避免析构函数释放堆区空间导致的报错）
+    MyInteger& operator=(MyInteger &m);
+    int* mRefNum; // 公有成员变量，指针变量位于堆区，由程序员自行管理空间释放
+ 
+private:
+    int mNum; // 私有成员变量，普通变量位于栈区，程序运行结束释放空间
+ 
+};
+ 
+// 全局函数重置运算符<<
+ostream& operator<<(ostream& out, MyInteger myInt){
+    out << myInt.mNum;
+    return out;
+}
+// 类内声明、类外定义
+MyInteger& MyInteger::operator=(MyInteger &m){
+    // 释放原有堆区空间
+    if(mRefNum!=NULL){
+        delete mRefNum;
+        mRefNum = NULL;
+    }
+    mRefNum = new int(*m.mRefNum); // 新开辟一段堆区空间
+    return *this;
+}
+ 
+void test(){
+    MyInteger myInt;
+    cout << myInt++ << endl;
+    cout << myInt << endl;
+    cout << ++(++myInt) << endl;
+    cout << myInt << endl;
+    MyInteger myInt2(20);
+    MyInteger myInt3(30);
+    MyInteger myInt4(40);
+    myInt3 = myInt4 = myInt2;
+    cout << "myInt3 mRefNum: " << *myInt3.mRefNum << endl;
+}
+ 
+int main() {
+    test();
+    system("read"); // macOS下无 system("pause")，使用它按Enter键后退出程序
+    return 0;
+}
+```
+
+ 
