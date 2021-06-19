@@ -1589,29 +1589,94 @@ return Complex(real + x.real, image +x.image);
 
 ## 8-1 软件的设计模式
 
+- 个模式描述了一个不断发生的问题及这个问题的解决方案；
+  - 模式是前人的设计经验上总结出来的对于一些普遍存在的问题提供的通用的解决方案；
+  - 比如单例模式，观察者模式等；
+- 软件中有很多模式：
+  - 面向对象的常见23种设计模式；
+  - 反模式；
+  - 企业应用架构模式等；
 
+《设计模式：可复用面向对象软件的基础（GOF》
 
-## 8-2 单例模式
-
-
-
-## 8-3 static和单例模式的实现
-
-
-
-## 8-4 观察者模式
-
-
-
-## 8-5 list的使用和观察者模式的实现1
+![image-20210617230304263](重构你的C++知识体系.assets/image-20210617230304263.png)
 
 
 
-## 8-6 观察者模式的实现2
+## 8-2 单例模式 Singleton
+
+- 有些时候，我们需要整个程序中有且只有一个实例
+
+  - 常见场景：如系统日志，Windows资源管理器窗口，数据库分配主键操作等；
+  - 实现思路
+    1. **Singleton 拥有一个私有构造函数，确保用户无法通过 new 直接实例**
+    2. 包含一个静态私有成员变量 `Instance` 与静态公有方法 `Instance()`；
+
+- `static` 和单例模式的实现：
+
+  ```C++
+  // Singleton.cpp:
+  #include "Singleton.h"
+  Singleton* Singleton::This = nullptr;
+  const Singleton* Singleton::getInstance() {
+  	if (!This)
+  	{
+  		This = new Singleton;
+  	}
+  	return This;
+  }
+  ```
+
+  ```C++
+  #pragma once
+  #include<iostream>
+  using namespace std;
+  class Singleton
+  {
+  public:
+  	static const Singleton* getInstance();
+  	static void Do() {
+  		cout << "DO" << endl;
+  	}
+  private:
+  	// 将构造和析构函数私有化，防止外部访问
+  	Singleton() {};
+  	~Singleton() {};
+  
+  	static Singleton* This; // 使用静态变量帮助解决资源的分配和释放
+  };
+  
+  ```
+
+  ```C++
+  // demo.cpp
+  #include"Singleton.h"
+  int main()
+  {
+  	Singleton::getInstance()->Do();
+  }
+  ```
 
 
 
-## 8-7 void星NULL和nullptr
+## 8-4 观察者模式 Observer
+
+- 在观察者模式中，观察者需要直接订阅目标事件；在目标发岀内容改变的事件后，直接接收事件并作出响应对象常是一对多关系
+- 常见场景：各种MVC的框架中，Model的变化通知各种类型的 view 时几乎都存在这种模式；
+- 实现思路
+  - 将问题的职责**解耦和**，将 Observable 和 Observer 抽象开，分清抽象和实体；
+
+
+
+## 8-5 list 的使用和观察者模式的实现
+
+
+
+8-6 观察者模式的实现
+
+
+
+## 8-7 void*NULL 和 nullptr
 
 
 
