@@ -1670,49 +1670,147 @@ return Complex(real + x.real, image +x.image);
 
 ## 8-5 list 的使用和观察者模式的实现
 
+- Lists将元素按顺序储存在链表中.与向量（vectors）相比它允许快速的插入和删除，但是随机访问却比较慢。
+
+![image-20210620214025500](重构你的C++知识体系.assets/image-20210620214025500.png)
+
+![image-20210620214101363](重构你的C++知识体系.assets/image-20210620214101363.png)
+
 
 
 8-6 观察者模式的实现
 
 
 
-## 8-7 void*NULL 和 nullptr
+## 8-7 void*, NULL 和 nullptr
+
+```C++
+// 在C语言中
+#define NULL(void*)O)
+
+// 在C++语言中
+#ifndef null
+	#ifdef cplusplus
+		#define NULL 0
+	#else
+		#define NULL(void*)O)
+	#endif
+#endif
+```
+
+- 在C++11中，`nullptrk` 用来替代 `(void*)0`，`NULL` 则只表示 `0`
 
 
 
-## 8-8 static_cast的使用
+## 8-8 const_cast的使用
 
-
+- C语言：
+  - 隐式类型转换
+    - 比如：`double f=1.0/2；`
+  - 显式类型转换：
+    - (类型说明符)(表达式)
+    - 比如：`double f= double（1）/double（2）`
+- C 类型转换的问题：
+  1. 任意类型之间都可以转换，编译器无法判断其正确性；
+  2. 难于定位：在源码中无法快速定位；
+- **`const_cast`**:
+  - 用于转换**指针**或**引用**，**去掉类型的 const 属性；**
 
 ## 8-9 reinterpret_cast的使用
 
+- **`reinterpret_cast`**：很危险！
+  - **重新解释类型**，既**不检査指向的內容**，也**不检査指针类型本身**；
+  - 但要求转换前后的类型**所占用内存大小一致**，否则将引发编译时错误。
 
+## 8-10 static_cast 和 dynamic_cast 的使用
 
-## 8-10 static_cast和dynamic_cast的使用
+- **`static_cast`**：
+  - 用于**基本类型转换**，有继承关系类对象和类指针之间转换，由程序员来确保转换是安全的，它不会产生动态转换的类型安全检查的开销
+  - 不进行安全检查。
+- **`dynamic_cast`**：
+  - **只能用于含有虚函数的类，必须用在多态体系中**，用于类层次间的**向上和向下转化**；
+  - 向下转化时，如果是非法的对于指针返回`NULL`；
+
+```C++
+// 虚函数 动态类型转换
+class Base {
+public:
+	Base() :_i(0) { ; }
+	virtual void T() { cout << "Base" << endl; }
+private:
+	int _i;
+};
+class Derived :public Base
+{
+public:
+	Derived() :_j(0) { ; }
+	virtual void T() { cout << "Derived" << endl; }
+private:
+	int _j;
+};
+int main()
+{
+	double a = 1.1;
+	int b = int(a);
+	double c = double(b + a);
+	cout << b << endl;
+	cout << b + 0.1 << endl;
+	cout << c << endl;
+
+	Base cb;
+	Derived cd;
+	Base* pcb;
+	Derived* pcd;
+
+	// 子类——> 父类
+	pcb = static_cast<Base*>(&cd);
+	pcb = dynamic_cast<Base*>(&cd);
+	if (pcb == NULL)
+	{
+		cout << "unsafe dynamic_cast D to B" << endl;
+	}
+	// 父类——> 子类
+	pcd = static_cast<Derived*>(&cb);
+	pcd = dynamic_cast<Derived*>(&cb);
+	if (pcd == NULL)
+	{
+		cout << "unsafe dynamic_cast B to D" << endl;
+	}
+return 0;
+}
+```
 
 
 
 ## 8-11 Adapter模式和多重继承
 
+- 适配器将类接转换为客户端期望的另一个接口；
+- 使用适配器可防止类由于接口不兼容而一起工作；
+- 适配器模式的动机是，如果可以更改接口，则可以重用现有软件
 
-
-## 8-12 Adapter组合方式实现
+8-12 Adapter组合方式实现
 
 
 
 ## 8-13 设计模式总结
 
-
+- 23种面向对象设计模式从分类上大致有创建型，结构型和行为型模式；
+- 设计模式不是万能的，它建立在系统**变化点**上，哪里有变化哪里就可以用；
+- 设计模式为了解耦和，为了扩展，它通常是演变过来的，需要演变才能准确定位；
+- 设计模式是一种软件设计的方法，不是标准，面前大部分的框架中都已经包含了大量设计模式的思想；
 
 ## 8-14 泛型编程之泛型函数1
 
+- 如果说面向对象是一种通过间接层来调用函数，以换取一种抽象，那么泛型编程则是更直接的抽象，它不会因为间接层而损失效率；
+- 不同于面向对象的动态期多态，泛型编程是一种**静态期多态**，通过编译器生成最直接的代码；
+  - 模板编程的难点很大程度上在于对**编译器**的理解，我们需要知道怎么帮助编译器提供需要生成代码的信息
+- 泛型编程可以将算法与特定类型，结构剥离，尽可能复用代码；
+
+8-15 泛型编程之泛型函数2
 
 
-## 8-15 泛型编程之泛型函数2
 
-
-
-## 8-16 泛型编程的递推过程及总结
+8-16 泛型编程的递推过程及总结
 
 
 

@@ -1,8 +1,9 @@
 ﻿#include <iostream>
 #include <string>
 #include <memory>
-#include"Singleton.h"
-
+//#include"Singleton.h"
+//#include"Observer.h"
+using namespace std;
 
 //struct B;
 //struct A {
@@ -58,9 +59,69 @@
 //	cout << tA.use_count() << endl; // 1
 //	cout << tB.use_count() << endl; // 2
 //};
+
+//class User1 :public Observer {
+//	virtual void Update(void* pArg) {
+//		cout << "User1" << endl;
+//	}
+//};
+//class User2 :public Observer {
+//	virtual void Update(void* pArg) {
+//		cout << "User2" << endl;
+//	}
+//};
+
+// 虚函数 动态类型转换
+class Base {
+public:
+	Base() :_i(0) { ; }
+	virtual void T() { cout << "Base" << endl; }
+private:
+	int _i;
+};
+class Derived :public Base
+{
+public:
+	Derived() :_j(0) { ; }
+	virtual void T() { cout << "Derived" << endl; }
+private:
+	int _j;
+};
 int main()
 {
-	Singleton::getInstance()->Do();
+	double a = 1.1;
+	double e = 2;
+	int b = int(a);
+	double c = double(b + a);
+	cout << b << endl;
+	cout << b + 0.1 << endl;
+	cout << c << endl;
+	cout << e + 0.1 << endl;
+
+	Base cb;
+	Derived cd;
+	Base* pcb;
+	Derived* pcd;
+
+	// 子类——> 父类
+	pcb = static_cast<Base*>(&cd);
+	pcb = dynamic_cast<Base*>(&cd);
+	if (pcb == NULL)
+	{
+		cout << "unsafe dynamic_cast D to B" << endl;
+	}
+	// 父类——> 子类
+	pcd = static_cast<Derived*>(&cb);
+	pcd = dynamic_cast<Derived*>(&cb);
+	if (pcd == NULL)
+	{
+		cout << "unsafe dynamic_cast B to D" << endl;
+	}
+
+	//User1 u1;
+	//User2 u2;
+
+	//Singleton::getInstance()->Do();
 
 
 	//Test();

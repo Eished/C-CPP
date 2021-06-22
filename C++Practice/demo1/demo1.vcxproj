@@ -139,10 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="Observerable.cpp" />
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="demo1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Observer.h" />
+    <ClInclude Include="Observerable.h" />
     <ClInclude Include="Singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
