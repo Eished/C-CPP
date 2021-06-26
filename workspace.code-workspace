@@ -1,13 +1,7 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "..\\node\\JStest"
-		}
-	],
-	"settings": {
-		"files.defaultLanguage": "c"
-	}
+  "folders": [
+    {
+      "path": "."
+    }
+  ]
 }
