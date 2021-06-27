@@ -1006,29 +1006,864 @@ Lambda函数的语法定义如下：
 
 
 
-
-
 ## [C++ 数字](https://www.runoob.com/cplusplus/cpp-numbers.html)
+
+### C++ 数学运算
+
+在 C++ 中，除了可以创建各种函数，还包含了各种有用的函数供您使用。这些函数写在标准 C 和 C++ 库中，叫做**内置**函数。您可以在程序中引用这些函数。
+
+C++ 内置了丰富的数学函数，可对各种数字进行运算。下表列出了 C++ 中一些有用的内置的数学函数。
+
+为了利用这些函数，您需要引用数学头文件 `<cmath>`。
+
+| 序号 | 函数 & 描述                                                  |
+| :--- | :----------------------------------------------------------- |
+| 1    | **double cos(double);** 该函数返回弧度角（double 型）的余弦。 |
+| 2    | **double sin(double);** 该函数返回弧度角（double 型）的正弦。 |
+| 3    | **double tan(double);** 该函数返回弧度角（double 型）的正切。 |
+| 4    | **double log(double);** 该函数返回参数的自然对数。           |
+| 5    | **double pow(double, double);** 假设第一个参数为 x，第二个参数为 y，则该函数返回 x 的 y 次方。 |
+| 6    | **double hypot(double, double);** 该函数返回两个参数的平方总和的平方根，也就是说，参数为一个直角三角形的两个直角边，函数会返回斜边的长度。 |
+| 7    | **double sqrt(double);** 该函数返回参数的平方根。            |
+| 8    | **int abs(int);** 该函数返回整数的绝对值。                   |
+| 9    | **double fabs(double);** 该函数返回任意一个浮点数的绝对值。  |
+| 10   | **double floor(double);** 该函数返回一个小于或等于传入参数的最大整数。 |
+
+### C++ 随机数
+
+在许多情况下，需要生成随机数。关于随机数生成器，有两个相关的函数。一个是 **rand()**，该函数只返回一个伪随机数。生成随机数之前必须先调用 **srand()** 函数。
+
+下面是一个关于生成随机数的简单实例。实例中使用了 **time()** 函数来获取系统时间的秒数，通过调用 rand() 函数来生成随机数：
+
+```C++
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+ 
+using namespace std;
+ 
+int main ()
+{
+   int i,j;
+ 
+   // 设置种子
+   srand( (unsigned)time( NULL ) );
+ 
+   /* 生成 10 个随机数 */
+   for( i = 0; i < 10; i++ )
+   {
+      // 生成实际的随机数
+      j= rand();
+      cout <<"随机数： " << j << endl;
+   }
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+随机数： 1748144778
+随机数： 630873888
+随机数： 2134540646
+随机数： 219404170
+随机数： 902129458
+随机数： 920445370
+随机数： 1319072661
+随机数： 257938873
+随机数： 1256201101
+随机数： 580322989
+```
+
+**srand函数是随机数发生器的初始化函数。**
+
+**原型：** **void srand(unsigned seed);**
+
+**用法：**它需要提供一个种子，这个种子会对应一个随机数，如果使用相同的种子后面的rand()函数会出现一样的随机数。如： **srand(1);** 直接使用 1 来初始化种子。不过为了防止随机数每次重复，常常使用系统时间来初始化，即使用 time 函数来获得系统时间，它的返回值为从 00:00:00 GMT, January 1, 1970 到现在所持续的秒数，然后将 time_t 型数据转化为(unsigned)型再传给 srand 函数，即： srand((unsigned) time(&t)); 还有一个经常用法，不需要定义time_t型t变量,即： srand((unsigned) time(NULL)); 直接传入一个空指针，因为你的程序中往往并不需要经过参数获得的t数据。
+
+例子：
+
+```C++
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h> /*用到了time函数，所以要有这个头文件*/
+#define MAX 10
+ 
+int main( void)
+{
+    int number[MAX] = {0};
+    int i;
+    srand((unsigned) time(NULL)); /*播种子*/
+    for(i = 0; i < MAX; i++)
+    {
+        number[i] = rand() % 100; /*产生100以内的随机整数*/
+        printf("%d ", number[i]);
+    }
+    printf("\n");
+    return 0;
+}
+```
+
+**建议使用random库生成真随机数**，如下：
+
+```C++
+#include <random>
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    random_device rd;   // non-deterministic generator
+    mt19937 gen(rd());  // to seed mersenne twister.
+    uniform_int_distribution<> dist(1,6); // distribute results between 1 and 6 inclusive.
+
+    for (int i = 0; i < 5; ++i) {
+        cout << dist(gen) << " "; // pass the generator to the distribution.
+    }
+    cout << endl;
+}
+```
+
+输出如下：
+
+```
+5 1 6 1 2
+```
 
 
 
 ## [C++ 数组](https://www.runoob.com/cplusplus/cpp-arrays.html)
 
+C++ 支持**数组**数据结构，它可以存储一个固定大小的相同类型元素的顺序集合。数组是用来存储一系列数据，但它往往被认为是一系列相同类型的变量。
+
+所有的数组都是由连续的内存位置组成。最低的地址对应第一个元素，最高的地址对应最后一个元素。
+
+### 声明数组
+
+在 C++ 中要声明一个数组，需要指定元素的类型和元素的数量，如下所示：
+
+```
+type arrayName [ arraySize ];
+```
+
+这叫做一维数组。**arraySize** 必须是一个大于零的整数常量，**type** 可以是任意有效的 C++ 数据类型。例如，要声明一个类型为 double 的包含 10 个元素的数组 **balance**，声明语句如下：
+
+```C++
+double balance[10];
+```
+
+现在 *balance* 是一个可用的数组，可以容纳 10 个类型为 double 的数字。
+
+### 初始化数组
+
+在 C++ 中，您可以逐个初始化数组，也可以使用一个初始化语句，如下所示：
+
+```C++
+double balance[5] = {1000.0, 2.0, 3.4, 7.0, 50.0};
+```
+
+大括号 { } 之间的值的数目不能大于我们在数组声明时在方括号 [ ] 中指定的元素数目。
+
+如果您省略掉了数组的大小，数组的大小则为初始化时元素的个数。因此，如果：
+
+```C++
+double balance[] = {1000.0, 2.0, 3.4, 7.0, 50.0};
+```
+
+您将创建一个数组，它与前一个实例中所创建的数组是完全相同的。下面是一个为数组中某个元素赋值的实例：
+
+```C++
+balance[4] = 50.0;
+```
+
+上述的语句把数组中第五个元素的值赋为 50.0。所有的数组都是以 0 作为它们第一个元素的索引，也被称为基索引，数组的最后一个索引是数组的总大小减去 1。以下是上面所讨论的数组的的图形表示：
+
+![数组表示](https://www.runoob.com/wp-content/uploads/2014/08/array_presentation.jpg)
+
+### 访问数组元素
+
+数组元素可以通过数组名称加索引进行访问。元素的索引是放在方括号内，跟在数组名称的后边。例如：
+
+```
+double salary = balance[9];
+```
+
+上面的语句将把数组中第 10 个元素的值赋给 salary 变量。下面的实例使用了上述的三个概念，即，声明数组、数组赋值、访问数组：
+
+### C++ 中数组详解
+
+在 C++ 中，数组是非常重要的，我们需要了解更多有关数组的细节。下面列出了 C++ 程序员必须清楚的一些与数组相关的重要概念：
+
+| 概念                                                         | 描述                                                         |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| [多维数组](https://www.runoob.com/cplusplus/cpp-multi-dimensional-arrays.html) | C++ 支持多维数组。多维数组最简单的形式是二维数组。           |
+| [指向数组的指针](https://www.runoob.com/cplusplus/cpp-pointer-to-an-array.html) | 您可以通过指定不带索引的数组名称来生成一个指向数组中第一个元素的指针。 |
+| [传递数组给函数](https://www.runoob.com/cplusplus/cpp-passing-arrays-to-functions.html) | 您可以通过指定不带索引的数组名称来给函数传递一个指向数组的指针。 |
+| [从函数返回数组](https://www.runoob.com/cplusplus/cpp-return-arrays-from-function.html) | C++ 允许从函数返回数组。                                     |
+
+**Array 是固定大小的，不能额外增加元素.当我们想定义不固定大小的字符时,可以使用 vector(向量) 标准库。**
+
+**实例**
+
+```C++
+#include <iostream>
+#include <vector>
+using namespace std;
+ 
+int main() {
+   // 创建向量用于存储整型数据
+   vector<int> vec; 
+   int i;
+
+   // 显示 vec 初始大小
+   cout << "vector size = " << vec.size() << endl;
+
+   // 向向量 vec 追加 5 个整数值
+   for(i = 0; i < 5; i++){
+      vec.push_back(i);
+   }
+
+   // 显示追加后 vec 的大小
+   cout << "extended vector size = " << vec.size() << endl;
+
+   return 0;
+}
+```
+
+vec 的大小随着 for 循环的输入而增大。
+
+执行以上代码，输出结果：
+
+```C++
+vector size = 0
+extended vector size = 5
+```
+
+### **Vector(向量):** 
+
+C++ 中的一种数据结构，确切的说是一个类。它相当于一个动态的数组，当程序员无法知道自己需要的数组的规模多大时，用其来解决问题可以达到最大节约空间的目的。
+
+用法:
+
+**1.文件包含:**
+
+首先在程序开头处加上 **`#include<vector>`** 以包含所需要的类文件 **vector**。
+
+还有一定要加上 **using namespace std;**
+
+**2.变量声明:**
+
+2.1 例: 声明一个 **int** 向量以替代一维的数组: **`vector <int> a;`** (等于声明了一个 int 数组 a[]，大小没有指定，可以动态的向里面添加删除)。
+
+2.2 例: 用 **vector** 代替二维数组.其实只要声明一个一维数组向量即可，而一个数组的名字其实代表的是它的首地址,所以只要声明一个地址的向量即可，即: **`vector <int *> a`** 。同理想用向量代替三维数组也是一样，**`vector <int **>a;`** 再往上面依此类推。
+
+**3.具体的用法以及函数调用:**
+
+3.1 得到向量中的元素和数组一样，例如:
+
+```C++
+vector <int *> a
+int b = 5;
+a.push_back(b);//该函数下面有详解
+cout<<a[0];       //输出结果为5
+```
+
+使用数组给向量赋值：
+
+```C++
+vector<int> v( a, a+sizeof(a)/sizeof(a[0]) );
+```
+
+或者：
+
+```C++
+int a[]={1,2,3,4,5,6,7,8,9};
+typedef vector<int> vec_int;
+vec_int vecArray(a,a+9);
+```
+
+
+
+在C++中，setw(int n)用来控制输出间隔,（n-1个空格）。
+
+setw()默认填充的内容为空格，可以setfill()配合使用设置其他字符填充。
+
+```C++
+cout<<setfill('*')<<setw(5)<<'a'<<endl;
+```
+
+则输出：
+
+```C++
+****a //4个*和字符a共占5个位置。
+```
+
+
+
+数组在使用时可以是一个含有变量的表达式，但是，**在数组声明时必须用常量表达式。**例如：
+
+```C++
+// 合法
+const int a=19;
+long b[a];
+
+// 合法
+const int a=19;
+long b[a+5];
+
+// 不合法
+int a=19;
+long b[a+5];
+```
+
+如果想声明一个任意长度的数组，可以用显式的类型转换，例如：
+
+```C++
+int a=19;
+int b[(const int)a];
+```
+
 
 
 ## [C++ 字符串](https://www.runoob.com/cplusplus/cpp-strings.html)
+
+C++ 提供了以下两种类型的字符串表示形式：
+
+- C 风格字符串
+- C++ 引入的 string 类类型
+
+### C 风格字符串
+
+C 风格的字符串起源于 C 语言，并在 C++ 中继续得到支持。字符串实际上是使用 **null** 字符 **\0** 终止的一维字符数组。因此，一个以 null 结尾的字符串，包含了组成字符串的字符。
+
+下面的声明和初始化创建了一个 **RUNOOB** 字符串。由于在数组的末尾存储了空字符，所以字符数组的大小比单词 **RUNOOB** 的字符数多一个。
+
+```C++
+char site[7] = {'R', 'U', 'N', 'O', 'O', 'B', '\0'};
+```
+
+依据数组初始化规则，您可以把上面的语句写成以下语句：
+
+```C++
+char site[] = "RUNOOB";
+```
+
+以下是 C/C++ 中定义的字符串的内存表示：
+
+![C/C++ 中的字符串表示](https://www.runoob.com/wp-content/uploads/2014/09/c-strings-2020-12-21.png)
+
+其实，您不需要把 **null** 字符放在字符串常量的末尾。C++ 编译器会在初始化数组时，自动把 **\0** 放在字符串的末尾。
+
+### C 字符串函数
+
+C++ 中有大量的函数用来操作以 null 结尾的字符串:
+
+| 序号 | 函数 & 目的                                                  |
+| :--- | :----------------------------------------------------------- |
+| 1    | **strcpy(s1, s2);** 复制字符串 s2 到字符串 s1。              |
+| 2    | **strcat(s1, s2);** 连接字符串 s2 到字符串 s1 的末尾。连接字符串也可以用 **+** 号，例如: `string str1 = "runoob"; string str2 = "google"; string str = str1 + str2;` |
+| 3    | **strlen(s1);** 返回字符串 s1 的长度。                       |
+| 4    | **strcmp(s1, s2);** 如果 s1 和 s2 是相同的，则返回 0；如果 s1<s2 则返回值小于 0；如果 s1>s2 则返回值大于 0。 |
+| 5    | **strchr(s1, ch);** 返回一个指针，指向字符串 s1 中字符 ch 的第一次出现的位置。 |
+| 6    | **strstr(s1, s2);** 返回一个指针，指向字符串 s1 中字符串 s2 的第一次出现的位置。 |
+
+下面的实例使用了上述的一些函数：
+
+```C++
+#include <iostream>
+#include <cstring>
+ 
+using namespace std;
+ 
+int main ()
+{
+   char str1[13] = "runoob";
+   char str2[13] = "google";
+   char str3[13];
+   int  len ;
+ 
+   // 复制 str1 到 str3
+   strcpy( str3, str1);
+   cout << "strcpy( str3, str1) : " << str3 << endl;
+ 
+   // 连接 str1 和 str2
+   strcat( str1, str2);
+   cout << "strcat( str1, str2): " << str1 << endl;
+ 
+   // 连接后，str1 的总长度
+   len = strlen(str1);
+   cout << "strlen(str1) : " << len << endl;
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```C++
+strcpy( str3, str1) : runoob
+strcat( str1, str2): runoobgoogle
+strlen(str1) : 12
+```
+
+### C++ 中的 String 类
+
+C++ 标准库提供了 **string** 类类型，支持上述所有的操作，另外还增加了其他更多的功能。我们将学习 C++ 标准库中的这个类，现在让我们先来看看下面这个实例：
+
+现在您可能还无法透彻地理解这个实例，因为到目前为止我们还没有讨论类和对象。所以现在您可以只是粗略地看下这个实例，等理解了面向对象的概念之后再回头来理解这个实例。
+
+```C++
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+ 
+int main ()
+{
+   string str1 = "runoob";
+   string str2 = "google";
+   string str3;
+   int  len ;
+ 
+   // 复制 str1 到 str3
+   str3 = str1;
+   cout << "str3 : " << str3 << endl;
+ 
+   // 连接 str1 和 str2
+   str3 = str1 + str2;
+   cout << "str1 + str2 : " << str3 << endl;
+ 
+   // 连接后，str3 的总长度
+   len = str3.size();
+   cout << "str3.size() :  " << len << endl;
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```C++
+str3 : runoob
+str1 + str2 : runoobgoogle
+str3.size() :  12
+```
+
+**string类提供了一系列针对字符串的操作**，比如：
+
+- append() -- 在字符串的末尾添加字符
+- find() -- 在字符串中查找字符串
+- insert() -- 插入字符
+- length() -- 返回字符串的长度
+- replace() -- 替换字符串
+- substr() -- 返回某个子字符串
+
+
+
+### **C++ 输入字符串：**
+
+cin、cin.get()、cin.getline()、getline()、gets()、getchar()
+
+#### 1. cin>>
+
+用法一：最常用、最基本的用法，输入一个数字：
+
+```C++
+#include <iostream>
+using namespace std;
+int main ()
+{
+  int a,b;
+  cin>>a>>b;
+  cout<<a+b<<endl;
+}
+
+//输入：2[回车]3[回车]
+//输出：5
+
+```
+
+用法二：接受一个字符串，遇“空格”、“Tab”、“回车”都结束
+
+```C++
+#include <iostream>
+using namespace std;
+int main ()
+{
+  char a[20];
+  cin>>a;
+  cout<<a<<endl;
+}
+
+//输入：jkljkljkl
+//输出：jkljkljkl
+
+//输入：jkljkl jkljkl //遇空格结束，所以不能输入多个单词
+//输出：jkljkl
+```
+
+#### 2. cin.get()
+
+用法一：cin.get(字符变量名)可以用来接收字符
+
+```C++
+#include <iostream>
+using namespace std;
+int main ()
+{
+char ch;
+ch=cin.get(); //或者cin.get(ch);只能获取一个字符
+cout<<ch<<endl;
+}
+
+//输入：jljkljkl
+//输出：j
+```
+
+用法二：cin.get(字符数组名，接收字符数)用来接收一行字符串，可以接收空格
+
+```C++
+#include <iostream>
+using namespace std;
+int main ()
+{
+char a[20];
+cin.get(a,20); //有些类似getline。可以输入多个单词，中间空格隔开。
+cout<<a<<endl;
+}
+
+//输入：jkl jkl jkl
+//输出：jkl jkl jkl
+
+//输入：abcdeabcdeabcdeabcdeabcde （输入25个字符）
+//输出：abcdeabcdeabcdeabcd （接收19个字符+1个'\0'）
+
+```
+
+
+
+用法三：cin.get(无参数)没有参数主要是用于舍弃输入流中的不需要的字符, 或者舍弃回车, 弥补cin.get(字符数组名,接收字符数目)的不足.
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+int main(void)
+{
+     
+    char arr[10];
+    cin.get(arr,10);
+    cin.get();//用于吃掉回车，相当于getchar();
+    cout<<arr<<endl;
+    cin.get(arr,5);
+    cout<<arr<<endl;
+    system("pause");
+    return 0;
+}
+ 
+//输入abcdefghi
+//输出abcdefghi
+//输入abcde
+//输出abcd
+//请按任意键继续
+#include <iostream>
+using namespace std;
+ 
+int main(void)
+{
+     
+    char arr[10];
+    cin.get(arr,10);
+    //cin.get();//用于吃掉回车，相当于getchar(); 现在把这行注释掉试试看
+    cout<<arr<<endl;
+    cin.get(arr,5);
+    cout<<arr<<endl;
+    system("pause");
+    return 0;
+}
+ 
+//输入abcdefghi
+//输出abcdefghi
+//请按任意键继续
+```
+
+#### 3.cin.getline()
+
+cin.getline(): 接受一个字符串，可以接收空格并输出
+
+```C++
+#include <iostream>
+using namespace std;
+int main ()
+{
+char m[20];
+cin.getline(m,5); //与上面基本相同。
+cout<<m<<endl;
+}
+
+//输入：jkljkljkl
+//输出：jklj
+```
+
+接受5个字符到m中，其中最后一个为'\0'，所以只看到4个字符输出；
+
+如果把5改成20：
+
+```C++
+输入：jkljkljkl
+输出：jkljkljkl
+
+输入：jklf fjlsjf fjsdklf
+输出：jklf fjlsjf fjsdklf
+```
+
+延伸：
+
+cin.getline()实际上有三个参数，cin.getline(接受字符串到m,接受个数5,结束字符)
+
+当第三个参数省略时，系统默认为'\0' 是‘/n’吧。
+
+如果将例子中cin.getline()改为cin.getline(m,5,'a');当输入jlkjkljkl时输出jklj，输入jkaljkljkl时，输出jk
+
+当用在多维数组中的时候，也可以用cin.getline(m[i],20)之类的用法：
+
+```C++
+#include<iostream>
+#include<string>
+using namespace std;
+
+int main ()
+{
+char m[3][20];
+for(int i=0;i<3;i++)
+{
+cout<<"\n请输入第"<<i+1<<"个字符串："<<endl;
+cin.getline(m[i],20);
+}
+
+cout<<endl;
+for(int j=0;j<3;j++)
+cout<<"输出m["<<j<<"]的值:"<<m[j]<<endl;
+
+}
+```
+
+
+
+测试：
+
+```C++
+请输入第1个字符串：
+kskr1
+
+请输入第2个字符串：
+kskr2
+
+请输入第3个字符串：
+kskr3
+
+输出m[0]的值:kskr1
+输出m[1]的值:kskr2
+输出m[2]的值:kskr3
+```
+
+
+
+#### 4. getline()
+
+getline() ：接受一个字符串，可以接收空格并输出，需包含 **`#include<string>`**。
+
+```C++
+#include<iostream>
+#include<string>
+using namespace std;
+int main ()
+{
+    string str;
+    getline(cin,str);
+    cout<<str<<endl;
+}
+
+```
+
+测试：
+
+```C++
+输入：jkljkljkl //VC6中有个bug,需要输入两次回车。
+输出：jkljkljkl
+
+输入：jkl jfksldfj jklsjfl
+输出：jkl jfksldfj jklsjfl
+```
+
+
+
+和cin.getline()类似，但是cin.getline()属于istream流，而getline()属于string流，是不一样的两个函数
+
+#### 5. gets()
+
+gets()： 接受一个字符串，可以接收空格并输出，需包含 **#include<string>**。
+
+```C++
+#include<iostream>
+#include<string>
+using namespace std;
+int main ()
+{
+    char m[20];
+    gets(m); //不能写成m=gets();
+    cout<<m<<endl;
+}
+```
+
+测试：
+
+```C++
+输入：jkljkljkl
+输出：jkljkljkl
+
+输入：jkl jkl jkl
+输出：jkl jkl jkl
+```
+
+
+
+类似cin.getline()里面的一个例子，gets()同样可以用在多维数组里面：
+
+```C++
+#include<iostream>
+#include<string>
+using namespace std;
+
+int main ()
+{
+    char m[3][20];
+    for(int i=0;i<3;i++)
+    {
+        cout<<"\n请输入第"<<i+1<<"个字符串："<<endl;
+        gets(m[i]);
+    }
+
+    cout<<endl;
+    for(int j=0;j<3;j++)
+        cout<<"输出m["<<j<<"]的值:"<<m[j]<<endl;
+}
+```
+
+测试：
+
+```C++
+请输入第1个字符串：
+kskr1
+
+请输入第2个字符串：
+kskr2
+
+请输入第3个字符串：
+kskr3
+
+输出m[0]的值:kskr1
+输出m[1]的值:kskr2
+输出m[2]的值:kskr3
+```
+
+
+
+自我感觉gets()和cin.getline()的用法很类似，只不过cin.getline()多一个参数罢了；
+
+这里顺带说明一下，对于本文中的这个kskr1,kskr2,kskr3的例子，对于cin>>也可以适用，原因是这里输入的没有空格，如果输入了空格，比如“ks kr jkl[回车]”那么cin就会已经接收到3个字符串，“ks,kr,jkl”；再如“kskr 1[回车]kskr 2[回车]”，那么则接收“kskr,1,kskr”；这不是我们所要的结果！而cin.getline()和gets()因为可以接收空格，所以不会产生这个错误；
+
+#### 6.getchar()
+
+getchar() ：接受一个字符，需包含 **`#include<string>`**。
+
+```C++
+#include<iostream>
+using namespace std;
+int main ()
+{
+    char ch;
+    ch=getchar(); //不能写成getchar(ch);
+    cout<<ch<<endl;
+}
+
+```
+
+测试：
+
+```C++
+输入：jkljkljkl
+输出：j
+```
+
+
+
+getchar()是C语言的函数，C++也可以兼容，但是尽量不用或少用；
 
 
 
 ## [C++ 指针](https://www.runoob.com/cplusplus/cpp-pointers.html)
 
+### C++ 指针详解
+
+在 C++ 中，有很多指针相关的概念，这些概念都很简单，但是都很重要。下面列出了 C++ 程序员必须清楚的一些与指针相关的重要概念：
+
+| 概念                                                         | 描述                                                         |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| [C++ Null 指针](https://www.runoob.com/cplusplus/cpp-null-pointers.html) | C++ 支持空指针。NULL 指针是一个定义在标准库中的值为零的常量。 |
+| [C++ 指针的算术运算](https://www.runoob.com/cplusplus/cpp-pointer-arithmetic.html) | 可以对指针进行四种算术运算：++、--、+、-                     |
+| [C++ 指针 vs 数组](https://www.runoob.com/cplusplus/cpp-pointers-vs-arrays.html) | 指针和数组之间有着密切的关系。                               |
+| [C++ 指针数组](https://www.runoob.com/cplusplus/cpp-array-of-pointers.html) | 可以定义用来存储指针的数组。                                 |
+| [C++ 指向指针的指针](https://www.runoob.com/cplusplus/cpp-pointer-to-pointer.html) | C++ 允许指向指针的指针。                                     |
+| [C++ 传递指针给函数](https://www.runoob.com/cplusplus/cpp-passing-pointers-to-functions.html) | 通过引用或地址传递参数，使传递的参数在调用函数中被改变。     |
+| [C++ 从函数返回指针](https://www.runoob.com/cplusplus/cpp-return-pointer-from-functions.html) | C++ 允许函数返回指针到局部变量、静态变量和动态内存分配。     |
+
 
 
 ## [C++ 引用](https://www.runoob.com/cplusplus/cpp-references.html)
 
+### C++ 引用 vs 指针
+
+引用很容易与指针混淆，它们之间有三个主要的不同：
+
+- 不存在空引用。引用必须连接到一块合法的内存。
+- 一旦引用被初始化为一个对象，就不能被指向到另一个对象。指针可以在任何时候指向到另一个对象。
+- 引用必须在创建时被初始化。指针可以在任何时间被初始化。
+
+引用通常用于函数参数列表和函数返回值。下面列出了 C++ 程序员必须清楚的两个与 C++ 引用相关的重要概念：
+
+| 概念                                                         | 描述                                                     |
+| :----------------------------------------------------------- | :------------------------------------------------------- |
+| [把引用作为参数](https://www.runoob.com/cplusplus/passing-parameters-by-references.html) | C++ 支持把引用作为参数传给函数，这比传一般的参数更安全。 |
+| [把引用作为返回值](https://www.runoob.com/cplusplus/returning-values-by-reference.html) | 可以从 C++ 函数中返回引用，就像返回其他数据类型一样。    |
+
 
 
 ## [C++ 日期 & 时间](https://www.runoob.com/cplusplus/cpp-date-time.html)
+
+C++ 标准库没有提供所谓的日期类型。C++ 继承了 C 语言用于日期和时间操作的结构和函数。为了使用日期和时间相关的函数和结构，需要在 C++ 程序中引用 `<ctime>` 头文件。
+
+有四个与时间相关的类型：**clock_t、time_t、size_t** 和 **tm**。类型 clock_t、size_t 和 time_t 能够把系统时间和日期表示为某种整数。
+
+结构类型 **tm** 把日期和时间以 C 结构的形式保存，tm 结构的定义如下：
+
+```C++
+struct tm {
+  int tm_sec;   // 秒，正常范围从 0 到 59，但允许至 61
+  int tm_min;   // 分，范围从 0 到 59
+  int tm_hour;  // 小时，范围从 0 到 23
+  int tm_mday;  // 一月中的第几天，范围从 1 到 31
+  int tm_mon;   // 月，范围从 0 到 11
+  int tm_year;  // 自 1900 年起的年数
+  int tm_wday;  // 一周中的第几天，范围从 0 到 6，从星期日算起
+  int tm_yday;  // 一年中的第几天，范围从 0 到 365，从 1 月 1 日算起
+  int tm_isdst; // 夏令时
+};
+```
+
+
 
 
 
