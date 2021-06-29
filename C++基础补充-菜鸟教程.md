@@ -4742,29 +4742,1922 @@ Try Again? Enter y or n
 
 ## [C++ 动态内存](https://www.runoob.com/cplusplus/cpp-dynamic-memory.html)
 
+了解动态内存在 C++ 中是如何工作的是成为一名合格的 C++ 程序员必不可少的。C++ 程序中的内存分为两个部分：
+
+- **栈：**在函数内部声明的所有变量都将占用栈内存。
+- **堆：**这是程序中未使用的内存，在程序运行时可用于动态分配内存。
+
+很多时候，您无法提前预知需要多少内存来存储某个定义变量中的特定信息，所需内存的大小需要在运行时才能确定。
+
+在 C++ 中，您可以使用特殊的运算符为给定类型的变量在运行时分配堆内的内存，这会返回所分配的空间地址。这种运算符即 **new** 运算符。
+
+如果您不再需要动态分配的内存空间，可以使用 **delete** 运算符，删除之前由 new 运算符分配的内存。
+
+### new 和 delete 运算符
+
+下面是使用 new 运算符来为任意的数据类型动态分配内存的通用语法：
+
+```
+new data-type;
+```
+
+在这里，**data-type** 可以是包括数组在内的任意内置的数据类型，也可以是包括类或结构在内的用户自定义的任何数据类型。让我们先来看下内置的数据类型。例如，我们可以定义一个指向 double 类型的指针，然后请求内存，该内存在执行时被分配。我们可以按照下面的语句使用 **new** 运算符来完成这点：
+
+```C++
+double* pvalue  = NULL; // 初始化为 null 的指针
+pvalue  = new double;   // 为变量请求内存
+```
+
+如果自由存储区已被用完，可能无法成功分配内存。所以建议检查 new 运算符是否返回 NULL 指针，并采取以下适当的操作：
+
+```C++
+double* pvalue  = NULL;
+if( !(pvalue  = new double ))
+{
+   cout << "Error: out of memory." <<endl;
+   exit(1);
+ 
+}
+```
+
+**malloc()** 函数在 C 语言中就出现了，在 C++ 中仍然存在，但建议尽量不要使用 malloc() 函数。new 与 malloc() 函数相比，其主要的优点是，new 不只是分配了内存，它还创建了对象。
+
+在任何时候，当您觉得某个已经动态分配内存的变量不再需要使用时，您可以使用 delete 操作符释放它所占用的内存，如下所示：
+
+```C++
+delete pvalue;        // 释放 pvalue 所指向的内存
+```
+
+下面的实例中使用了上面的概念，演示了如何使用 new 和 delete 运算符：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+int main ()
+{
+   double* pvalue  = NULL; // 初始化为 null 的指针
+   pvalue  = new double;   // 为变量请求内存
+ 
+   *pvalue = 29494.99;     // 在分配的地址存储值
+   cout << "Value of pvalue : " << *pvalue << endl;
+ 
+   delete pvalue;         // 释放内存
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+Value of pvalue : 29495
+```
+
+### 数组的动态内存分配
+
+假设我们要为一个字符数组（一个有 20 个字符的字符串）分配内存，我们可以使用上面实例中的语法来为数组动态地分配内存，如下所示：
+
+```C++
+char* pvalue  = NULL;   // 初始化为 null 的指针
+pvalue  = new char[20]; // 为变量请求内存
+```
+
+要删除我们刚才创建的数组，语句如下：
+
+```C++
+delete [] pvalue;        // 删除 pvalue 所指向的数组
+```
+
+下面是 new 操作符的通用语法，可以为多维数组分配内存，如下所示：
+
+```C++
+// 一维数组
+// 动态分配,数组长度为 m
+int *array=new int [m];
+ 
+//释放内存
+delete [] array;
+```
+
+```C++
+// 二维数组
+int **array
+// 假定数组第一维长度为 m， 第二维长度为 n
+// 动态分配空间
+array = new int *[m];
+for( int i=0; i<m; i++ )
+{
+    array[i] = new int [n]  ;
+}
+//释放
+for( int i=0; i<m; i++ )
+{
+    delete [] array[i];
+}
+delete [] array;
+```
+
+二维数组实例测试：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+int main()
+{
+    int **p;   
+    int i,j;   //p[4][8] 
+    //开始分配4行8列的二维数据   
+    p = new int *[4];
+    for(i=0;i<4;i++){
+        p[i]=new int [8];
+    }
+ 
+    for(i=0; i<4; i++){
+        for(j=0; j<8; j++){
+            p[i][j] = j*i;
+        }
+    }   
+    //打印数据   
+    for(i=0; i<4; i++){
+        for(j=0; j<8; j++)     
+        {   
+            if(j==0) cout<<endl;   
+            cout<<p[i][j]<<"\t";   
+        }
+    }   
+    //开始释放申请的堆   
+    for(i=0; i<4; i++){
+        delete [] p[i];   
+    }
+    delete [] p;   
+    return 0;
+}
+```
+
+```C++
+// 三维数组
+int ***array;
+// 假定数组第一维为 m， 第二维为 n， 第三维为h
+// 动态分配空间
+array = new int **[m];
+for( int i=0; i<m; i++ )
+{
+    array[i] = new int *[n];
+    for( int j=0; j<n; j++ )
+    {
+        array[i][j] = new int [h];
+    }
+}
+//释放
+for( int i=0; i<m; i++ )
+{
+    for( int j=0; j<n; j++ )
+    {
+        delete[] array[i][j];
+    }
+    delete[] array[i];
+}
+delete[] array;
+```
+
+三维数组测试实例：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+int main()
+{   
+    int i,j,k;   // p[2][3][4]
+    
+    int ***p;
+    p = new int **[2]; 
+    for(i=0; i<2; i++) 
+    { 
+        p[i]=new int *[3]; 
+        for(j=0; j<3; j++) 
+            p[i][j]=new int[4]; 
+    }
+    
+    //输出 p[i][j][k] 三维数据
+    for(i=0; i<2; i++)   
+    {
+        for(j=0; j<3; j++)   
+        { 
+            for(k=0;k<4;k++)
+            { 
+                p[i][j][k]=i+j+k;
+                cout<<p[i][j][k]<<" ";
+            }
+            cout<<endl;
+        }
+        cout<<endl;
+    }
+    
+    // 释放内存
+    for(i=0; i<2; i++) 
+    {
+        for(j=0; j<3; j++) 
+        {   
+            delete [] p[i][j];   
+        }   
+    }       
+    for(i=0; i<2; i++)   
+    {       
+        delete [] p[i];   
+    }   
+    delete [] p;  
+    return 0;
+}
+```
+
+### 对象的动态内存分配
+
+对象与简单的数据类型没有什么不同。例如，请看下面的代码，我们将使用一个对象数组来理清这一概念：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+class Box
+{
+   public:
+      Box() { 
+         cout << "调用构造函数！" <<endl; 
+      }
+      ~Box() { 
+         cout << "调用析构函数！" <<endl; 
+      }
+};
+ 
+int main( )
+{
+   Box* myBoxArray = new Box[4];
+ 
+   delete [] myBoxArray; // 删除数组
+   return 0;
+}
+```
+
+如果要为一个包含四个 Box 对象的数组分配内存，构造函数将被调用 4 次，同样地，当删除这些对象时，析构函数也将被调用相同的次数（4次）。
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+调用构造函数！
+调用构造函数！
+调用构造函数！
+调用构造函数！
+调用析构函数！
+调用析构函数！
+调用析构函数！
+调用析构函数！
+```
+
+### **delete 与 delete[] 区别：**
+
+所以总结下就是，如果ptr代表一个用new申请的内存返回的内存空间地址，即所谓的指针，那么：
+
+-  **delete ptr** -- 代表用来释放内存，且只用来释放ptr指向的内存。
+-  **delete[] rg** -- 用来释放rg指向的内存，！！还逐一调用数组中每个对象的 destructor！！
+
+对于像 int/char/long/int*/struct 等等简单数据类型，由于对象没有 destructor，所以用 delete 和 delete [] 是一样的！但是如果是C++ 对象数组就不同了！
+
+利用动态内存, 我们也可以做出链表, 可以**不断增长的数组**:
+
+```C++
+#include<iostream>
+using namespace std;
+
+struct node
+{
+    //链表的节点
+    int data;//数据
+    int num;//节点编号
+    struct node *next;//指向下一个节点
+};
+
+int main()
+{
+    struct node *head/*头节点*/, *p, *q;
+    head = NULL;
+    p = NULL;
+    q = new node;
+    q->next = NULL;
+    q->num = 1;
+    int a = -1;
+    cout << "请输入第1个数字:";
+    cin >> a;
+    q->data = a;
+    head = q;
+    while (a != 0)
+    {
+        p = q;
+        q = new node;
+        q->next = NULL;
+        p->next = q;
+        q->num = p->num + 1;
+        cout << "请输入第" << q->num << "个数字:";
+        cin >> a;
+        q->data = a;
+    }
+
+    //前面都是输入,这以下都是输出
+
+    q = head;
+    p = NULL;
+    while (1)
+    {
+        printf("%d %d\n", q->num, q->data);
+        if (q->data == 0)
+            break;
+        q = q->next;
+    }
+
+    //释放内存
+
+    q = head;
+    p = q;
+    while (1)
+    {
+        p = q->next;
+        delete[]q;
+        q = p;
+        if (!q)
+            break;
+    }
+    return 0;
+}
+```
+
+**->:** 用指针访问结构体内的变量。
+
+在链表中插入、删除节点也很简单, 先给next赋下一个节点地址,再加数据即可。
+
+### **new 和 malloc 内部的实现方式有什么区别？**
+
+new 的功能是在堆区新建一个对象，并返回该对象的指针。
+
+所谓的**【新建对象】**的意思就是，将调用该类的构造函数，因为如果不构造的话，就不能称之为一个对象。
+
+而 malloc 只是机械的分配一块内存，如果用 mallco 在堆区创建一个对象的话，是不会调用构造函数的。
+
+严格说来用 malloc 不能算是新建了一个对象，只能说是分配了一块与该类对象匹配的内存而已，然后强行把它解释为【这是一个对象】，按这个逻辑来，也不存在构造函数什么事。
+
+同样的，用 delete 去释放一个堆区的对象，会调用该对象的析构函数。
+
+用 free 去释放一个堆区的对象，不会调用该对象的析构函数。
+
+
+
+
+
 
 
 ## [C++ 命名空间](https://www.runoob.com/cplusplus/cpp-namespaces.html)
+
+因此，引入了**命名空间**这个概念，专门用于解决上面的问题，它可作为附加信息来区分不同库中相同名称的函数、类、变量等。使用了命名空间即定义了上下文。本质上，命名空间就是定义了一个范围。
+
+我们举一个计算机系统中的例子，一个文件夹(目录)中可以包含多个文件夹，每个文件夹中不能有相同的文件名，但不同文件夹中的文件可以重名。
+
+![img](https://www.runoob.com/wp-content/uploads/2019/09/0129A8E9-30FE-431D-8C48-399EA4841E9D.jpg)
+
+### 定义命名空间
+
+命名空间的定义使用关键字 **namespace**，后跟命名空间的名称，如下所示：
+
+```C++
+namespace namespace_name {
+   // 代码声明
+}
+```
+
+为了调用带有命名空间的函数或变量，需要在前面加上命名空间的名称，如下所示：
+
+```C++
+name::code;  // code 可以是变量或函数
+```
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+// 第一个命名空间
+namespace first_space{
+   void func(){
+      cout << "Inside first_space" << endl;
+   }
+}
+// 第二个命名空间
+namespace second_space{
+   void func(){
+      cout << "Inside second_space" << endl;
+   }
+}
+int main ()
+{
+ 
+   // 调用第一个命名空间中的函数
+   first_space::func();
+   
+   // 调用第二个命名空间中的函数
+   second_space::func(); 
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+Inside first_space
+Inside second_space
+```
+
+### using 指令
+
+您可以使用 **using namespace** 指令，这样在使用命名空间时就可以不用在前面加上命名空间的名称。这个指令会告诉编译器，后续的代码将使用指定的命名空间中的名称。
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+// 第一个命名空间
+namespace first_space{
+   void func(){
+      cout << "Inside first_space" << endl;
+   }
+}
+// 第二个命名空间
+namespace second_space{
+   void func(){
+      cout << "Inside second_space" << endl;
+   }
+}
+using namespace first_space;
+int main ()
+{
+ 
+   // 调用第一个命名空间中的函数
+   func();
+   
+   return 0;
+}
+```
+
+using 指令也可以用来指定命名空间中的特定项目。例如，如果您只打算使用 std 命名空间中的 cout 部分，您可以使用如下的语句：
+
+```C++
+using std::cout;
+```
+
+随后的代码中，在使用 cout 时就可以不用加上命名空间名称作为前缀，但是 **std** 命名空间中的其他项目仍然需要加上命名空间名称作为前缀，如下所示：
+
+```C++
+#include <iostream>
+using std::cout;
+ 
+int main ()
+{
+ 
+   cout << "std::endl is used with std!" << std::endl;
+   
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+std::endl is used with std!
+```
+
+**using** 指令引入的名称遵循正常的范围规则。名称从使用 **using** 指令开始是可见的，直到该范围结束。此时，在范围以外定义的同名实体是隐藏的。
+
+### 不连续的命名空间
+
+命名空间可以定义在几个不同的部分中，因此命名空间是由几个单独定义的部分组成的。一个命名空间的各个组成部分可以分散在多个文件中。
+
+所以，如果命名空间中的某个组成部分需要请求定义在另一个文件中的名称，则仍然需要声明该名称。下面的命名空间定义可以是定义一个新的命名空间，也可以是为已有的命名空间增加新的元素：
+
+```C++
+namespace namespace_name {
+   // 代码声明
+}
+```
+
+### 嵌套的命名空间
+
+命名空间可以嵌套，您可以在一个命名空间中定义另一个命名空间，如下所示：
+
+```C++
+namespace namespace_name1 {
+   // 代码声明
+   namespace namespace_name2 {
+      // 代码声明
+   }
+}
+```
+
+您可以通过使用 :: 运算符来访问嵌套的命名空间中的成员：
+
+```C++
+// 访问 namespace_name2 中的成员
+using namespace namespace_name1::namespace_name2;
+ 
+// 访问 namespace:name1 中的成员
+using namespace namespace_name1;
+```
+
+在上面的语句中，如果使用的是 namespace_name1，那么在该范围内 namespace_name2 中的元素也是可用的，如下所示：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+// 第一个命名空间
+namespace first_space{
+   void func(){
+      cout << "Inside first_space" << endl;
+   }
+   // 第二个命名空间
+   namespace second_space{
+      void func(){
+         cout << "Inside second_space" << endl;
+      }
+   }
+}
+using namespace first_space::second_space;
+int main ()
+{
+ 
+   // 调用第二个命名空间中的函数
+   func();
+   
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+Inside second_space
+```
+
+### 命名空间内的变量和函数
+
+关于命名空间内变量和函数及全局变量的使用和作用域:
+
+```C++
+#include <iostream>
+using namespace std;
+namespace A
+{
+    int a = 100;
+    namespace B            //嵌套一个命名空间B
+    {
+        int a =20;
+    }
+}
+
+int a = 200;//定义一个全局变量
+
+
+int main(int argc, char *argv[])
+{
+    cout <<"A::a ="<< A::a << endl;
+    cout <<"A::B::a ="<<A::B::a << endl;
+    cout <<"a ="<<a << endl;
+    cout <<"::a ="<<::a << endl;
+
+    int a = 30;
+    cout <<"a ="<<a << endl;
+    cout <<"::a ="<<::a << endl;
+
+    return 0;
+}
+```
+
+结果：
+
+```
+A::a =100  
+A::B::a =20
+a =200      //全局变量a
+::a =200
+a =30       //局部变量a
+::a =200    
+```
+
+**即**：全局变量 a 表达为 **::a**，用于当有同名的局部变量时来区别两者。
+
+补充关于 using 的错误示例：
+
+```C++
+#include <iostream>
+using namespace std;
+namespace A
+{
+    int a = 100;
+    int fun()
+    {
+        cout<<"a = "<<a<<endl;
+    }
+
+    namespace B            //嵌套一个命名空间B
+    {
+        int a =20;
+        int fun()
+        {
+             cout<<"a = "<<a<<endl;
+        }
+
+    }
+}
+
+
+int main(int argc, char *argv[])
+{
+    cout<<a<<endl;
+    fun();
+
+    return 0;
+}
+```
+
+**这样会出错：**会显示 a 变量和 fun 函数 **“was not declared in this scope”**，即找不到这个 a 和 fun 函数。
+
+**解决办法：** 用 using 来告诉编译器用到的是哪个命名空间内的内容。在 main() 上面加 **using namespace A;** 或者 **using namespace A::B;** 。这样就可以使用其中的 a 和 fun()。但是不能同时使用，因为这样也会导致编译出错，编译器器不知道要去使用哪个 a 和 fun()。
 
 
 
 ## [C++ 模板](https://www.runoob.com/cplusplus/cpp-templates.html)
 
+模板是泛型编程的基础，泛型编程即以一种独立于任何特定类型的方式编写代码。
+
+模板是创建泛型类或函数的蓝图或公式。库容器，比如迭代器和算法，都是泛型编程的例子，它们都使用了模板的概念。
+
+每个容器都有一个单一的定义，比如 **向量**，我们可以定义许多不同类型的向量，比如 **`vector <int>`** 或 **`vector <string>`**。
+
+您可以使用模板来定义函数和类，接下来让我们一起来看看如何使用。
+
+### 函数模板
+
+模板函数定义的一般形式如下所示：
+
+```C++
+template <typename type> ret-type func-name(parameter list)
+{
+   // 函数的主体
+}
+```
+
+在这里，type 是函数所使用的数据类型的占位符名称。这个名称可以在函数定义中使用。
+
+下面是函数模板的实例，返回两个数中的最大值：
+
+```C++
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+ 
+template <typename T>
+inline T const& Max (T const& a, T const& b) 
+{ 
+    return a < b ? b:a; 
+} 
+int main ()
+{
+ 
+    int i = 39;
+    int j = 20;
+    cout << "Max(i, j): " << Max(i, j) << endl; 
+ 
+    double f1 = 13.5; 
+    double f2 = 20.7; 
+    cout << "Max(f1, f2): " << Max(f1, f2) << endl; 
+ 
+    string s1 = "Hello"; 
+    string s2 = "World"; 
+    cout << "Max(s1, s2): " << Max(s1, s2) << endl; 
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+Max(i, j): 39
+Max(f1, f2): 20.7
+Max(s1, s2): World
+```
+
+### 类模板
+
+正如我们定义函数模板一样，我们也可以定义类模板。泛型类声明的一般形式如下所示：
+
+```C++
+template <class type> class class-name {
+.
+.
+.
+}
+```
+
+在这里，**type** 是占位符类型名称，可以在类被实例化的时候进行指定。您可以使用一个逗号分隔的列表来定义多个泛型数据类型。
+
+下面的实例定义了类 Stack<>，并实现了泛型方法来对元素进行入栈出栈操作：
+
+```C++
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <string>
+#include <stdexcept>
+ 
+using namespace std;
+ 
+template <class T>
+class Stack { 
+  private: 
+    vector<T> elems;     // 元素 
+ 
+  public: 
+    void push(T const&);  // 入栈
+    void pop();               // 出栈
+    T top() const;            // 返回栈顶元素
+    bool empty() const{       // 如果为空则返回真。
+        return elems.empty(); 
+    } 
+}; 
+ 
+template <class T>
+void Stack<T>::push (T const& elem) 
+{ 
+    // 追加传入元素的副本
+    elems.push_back(elem);    
+} 
+ 
+template <class T>
+void Stack<T>::pop () 
+{ 
+    if (elems.empty()) { 
+        throw out_of_range("Stack<>::pop(): empty stack"); 
+    }
+    // 删除最后一个元素
+    elems.pop_back();         
+} 
+ 
+template <class T>
+T Stack<T>::top () const 
+{ 
+    if (elems.empty()) { 
+        throw out_of_range("Stack<>::top(): empty stack"); 
+    }
+    // 返回最后一个元素的副本 
+    return elems.back();      
+} 
+ 
+int main() 
+{ 
+    try { 
+        Stack<int>         intStack;  // int 类型的栈 
+        Stack<string> stringStack;    // string 类型的栈 
+ 
+        // 操作 int 类型的栈 
+        intStack.push(7); 
+        cout << intStack.top() <<endl; 
+ 
+        // 操作 string 类型的栈 
+        stringStack.push("hello"); 
+        cout << stringStack.top() << std::endl; 
+        stringStack.pop(); 
+        stringStack.pop(); 
+    } 
+    catch (exception const& ex) { 
+        cerr << "Exception: " << ex.what() <<endl; 
+        return -1;
+    } 
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+7
+hello
+Exception: Stack<>::pop(): empty stack
+```
+
+### typename 和 class 的区别
+
+在 C++ Template 中很多地方都用到了 typename 与 class 这两个关键字，而且好像可以替换，是不是这两个关键字完全一样呢?
+
+相信学习 C++ 的人对 class 这个关键字都非常明白，class 用于定义类，在模板引入 c++ 后，最初定义模板的方法为：
+
+```
+template<class T>......
+```
+
+这里 class 关键字表明T是一个类型，后来为了避免 class 在这两个地方的使用可能给人带来混淆，所以引入了 typename 这个关键字，它的作用同 class 一样表明后面的符号为一个类型，这样在定义模板的时候就可以使用下面的方式了：
+
+```
+template<typename
+T>......
+```
+
+在模板定义语法中关键字 class 与 typename 的作用完全一样。
+
+typename 难道仅仅在模板定义中起作用吗？其实不是这样，typename 另外一个作用为：使用嵌套依赖类型(nested depended name)，如下所示：
+
+```C++
+class MyArray 
+{ 
+    public：
+    typedef int LengthType;
+.....
+}
+
+template<class T>
+void MyMethod( T myarr ) 
+{ 
+    typedef typename T::LengthType LengthType; 
+    LengthType length = myarr.GetLength; 
+}
+```
+
+这个时候 typename 的作用就是告诉 c++ 编译器，typename 后面的字符串为一个类型名称，而不是成员函数或者成员变量，这个时候如果前面没有 typename，编译器没有任何办法知道 T::LengthType 是一个类型还是一个成员名称(静态数据成员或者静态函数)，所以编译不能够通过。
+
+
+
+### 代码分离
+
+即 template class 的声明、定义，以及 main 函数分属不同文件。例如：
+
+```
+src_dir
+|____MyStack.h
+|____MyStack.cpp
+|____main.cpp
+```
+
+则 main.cpp 文件中需要同时包含 .h 文件和 .cpp 文件，不然会出现链接错误。
+
+```C++
+// main.cpp
+#include "MyStack.h"
+#include "MyStack.cpp"
+
+// 其他include
+// main函数主体 
+```
+
 
 
 ## [C++ 预处理器](https://www.runoob.com/cplusplus/cpp-preprocessor.html)
+
+预处理器是一些指令，指示编译器在实际编译之前所需完成的预处理。
+
+所有的预处理器指令都是以井号（#）开头，只有空格字符可以出现在预处理指令之前。预处理指令不是 C++ 语句，所以它们不会以分号（;）结尾。
+
+我们已经看到，之前所有的实例中都有 **#include** 指令。这个宏用于把头文件包含到源文件中。
+
+C++ 还支持很多预处理指令，比如 #include、#define、#if、#else、#line 等，让我们一起看看这些重要指令。
+
+### #define 预处理
+
+\#define 预处理指令用于创建符号常量。该符号常量通常称为**宏**，指令的一般形式是：
+
+```
+#define macro-name replacement-text 
+```
+
+当这一行代码出现在一个文件中时，在该文件中后续出现的所有宏都将会在程序编译之前被替换为 replacement-text。例如：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+#define PI 3.14159
+ 
+int main ()
+{
+ 
+    cout << "Value of PI :" << PI << endl; 
+ 
+    return 0;
+}
+```
+
+### 参数宏
+
+您可以使用 #define 来定义一个带有参数的宏，如下所示：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+#define MIN(a,b) (a<b ? a : b)
+ 
+int main ()
+{
+   int i, j;
+   i = 100;
+   j = 30;
+   cout <<"较小的值为：" << MIN(i, j) << endl;
+ 
+    return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+较小的值为：30
+```
+
+### 条件编译
+
+有几个指令可以用来有选择地对部分程序源代码进行编译。这个过程被称为条件编译。
+
+条件预处理器的结构与 if 选择结构很像。请看下面这段预处理器的代码：
+
+```C++
+#ifdef NULL
+   #define NULL 0
+#endif
+```
+
+您可以只在调试时进行编译，调试开关可以使用一个宏来实现，如下所示：
+
+```C++
+#ifdef DEBUG
+   cerr <<"Variable x = " << x << endl;
+#endif
+```
+
+如果在指令 #ifdef DEBUG 之前已经定义了符号常量 DEBUG，则会对程序中的 **cerr** 语句进行编译。您可以使用 #if 0 语句注释掉程序的一部分，如下所示：
+
+```C++
+#if 0
+   不进行编译的代码
+#endif
+```
+
+让我们尝试下面的实例：
+
+```C++
+#include <iostream>
+using namespace std;
+#define DEBUG
+ 
+#define MIN(a,b) (((a)<(b)) ? a : b)
+ 
+int main ()
+{
+   int i, j;
+   i = 100;
+   j = 30;
+#ifdef DEBUG
+   cerr <<"Trace: Inside main function" << endl;
+#endif
+ 
+#if 0
+   /* 这是注释部分 */
+   cout << MKSTR(HELLO C++) << endl;
+#endif
+ 
+   cout <<"The minimum is " << MIN(i, j) << endl;
+ 
+#ifdef DEBUG
+   cerr <<"Trace: Coming out of main function" << endl;
+#endif
+    return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+Trace: Inside main function
+The minimum is 30
+Trace: Coming out of main function
+```
+
+
+
+**预处理更多例子。**
+
+你可以这么写:
+
+1.
+
+```C++
+#if SOMETHING>=100
+//...
+#else
+//...
+#endif
+```
+
+2.
+
+```C++
+#ifndef SOMETHING_H
+#define SOMETHING_H
+//...
+#endif
+```
+
+3.
+
+```C++
+#if (defined DEBUG)&&(defined SOMETHING)
+//...
+#endif
+```
+
+4.
+
+```C++
+#ifdef SOMETHING
+int func1(){/*...*/}
+#else
+int func1(){/*...*/}
+#endif
+```
+
+5.
+
+```C++
+#ifdef SOMETHING
+namespace space1{
+#endif
+//...
+#ifdef SOMETHING
+}//space1
+#endif
+```
+
+还有很多。
+
+
+
+### # 和 ## 运算符
+
+**#** 和 **##** 运算符
+
+**#** 字符串化的意思，出现在宏定义中的#是把跟在后面的参数转换成一个字符串。
+
+当用作字符串化操作时，# 的主要作用是将宏参数不经扩展地转换成字符串常量。
+
+-  宏定义参数的左右两边的空格会被忽略，参数的各个 Token 之间的多个空格会被转换成一个空格。
+-  宏定义参数中含有需要特殊含义字符如"或\时，它们前面会自动被加上转义字符 \。
+
+**##** 连接符号，把参数连在一起。
+
+将多个 Token 连接成一个 Token。要点：
+
+-  它不能是宏定义中的第一个或最后一个 Token。
+-  前后的空格可有可无。
+
+
+
+\# 和 ## 预处理运算符在 C++ 和 ANSI/ISO C 中都是可用的。# 运算符会把 replacement-text 令牌转换为用引号引起来的字符串。
+
+请看下面的宏定义：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+#define MKSTR( x ) #x
+ 
+int main ()
+{
+    cout << MKSTR(HELLO C++) << endl;
+ 
+    return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+HELLO C++
+```
+
+让我们来看看它是如何工作的。不难理解，C++ 预处理器把下面这行：
+
+```C++
+cout << MKSTR(HELLO C++) << endl;
+```
+
+转换成了：
+
+```C++
+cout << "HELLO C++" << endl;
+```
+
+\## 运算符用于连接两个令牌。下面是一个实例：
+
+```C++
+#define CONCAT( x, y )  x ## y
+```
+
+当 CONCAT 出现在程序中时，它的参数会被连接起来，并用来取代宏。例如，程序中 CONCAT(HELLO, C++) 会被替换为 "HELLO C++"，如下面实例所示。
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+#define concat(a, b) a ## b
+int main()
+{
+   int xy = 100;
+   
+   cout << concat(x, y);
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+100
+```
+
+让我们来看看它是如何工作的。不难理解，C++ 预处理器把下面这行：
+
+```
+cout << concat(x, y);
+```
+
+转换成了：
+
+```
+cout << xy;
+```
+
+### C++ 中的预定义宏
+
+C++ 提供了下表所示的一些预定义宏：
+
+| 宏       | 描述                                                         |
+| :------- | :----------------------------------------------------------- |
+| __LINE__ | 这会在程序编译时包含当前行号。                               |
+| __FILE__ | 这会在程序编译时包含当前文件名。                             |
+| __DATE__ | 这会包含一个形式为 month/day/year 的字符串，它表示把源文件转换为目标代码的日期。 |
+| __TIME__ | 这会包含一个形式为 hour:minute:second 的字符串，它表示程序被编译的时间。 |
+
+让我们看看上述这些宏的实例：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+int main ()
+{
+    cout << "Value of __LINE__ : " << __LINE__ << endl;
+    cout << "Value of __FILE__ : " << __FILE__ << endl;
+    cout << "Value of __DATE__ : " << __DATE__ << endl;
+    cout << "Value of __TIME__ : " << __TIME__ << endl;
+ 
+    return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+Value of __LINE__ : 6
+Value of __FILE__ : test.cpp
+Value of __DATE__ : Feb 28 2011
+Value of __TIME__ : 18:52:48
+```
 
 
 
 ## [C++ 信号处理](https://www.runoob.com/cplusplus/cpp-signal-handling.html)
 
+信号是由操作系统传给进程的中断，会提早终止一个程序。在 UNIX、LINUX、Mac OS X 或 Windows 系统上，可以通过按 Ctrl+C 产生中断。
+
+有些信号不能被程序捕获，但是下表所列信号可以在程序中捕获，并可以基于信号采取适当的动作。这些信号是定义在 C++ 头文件 `<csignal>` 中。
+
+| 信号    | 描述                                         |
+| :------ | :------------------------------------------- |
+| SIGABRT | 程序的异常终止，如调用 **abort**。           |
+| SIGFPE  | 错误的算术运算，比如除以零或导致溢出的操作。 |
+| SIGILL  | 检测非法指令。                               |
+| SIGINT  | 程序终止(interrupt)信号。                    |
+| SIGSEGV | 非法访问内存。                               |
+| SIGTERM | 发送到程序的终止请求。                       |
+
+### signal() 函数
+
+C++ 信号处理库提供了 **signal** 函数，用来捕获突发事件。以下是 signal() 函数的语法：
+
+```C++
+void (*signal (int sig, void (*func)(int)))(int); 
+```
+
+这个看起来有点费劲，以下语法格式更容易理解：
+
+```C++
+signal(registered signal, signal handler)
+```
+
+这个函数接收两个参数：第一个参数是一个整数，代表了信号的编号；第二个参数是一个指向信号处理函数的指针。
+
+让我们编写一个简单的 C++ 程序，使用 signal() 函数捕获 SIGINT 信号。不管您想在程序中捕获什么信号，您都必须使用 **signal** 函数来注册信号，并将其与信号处理程序相关联。看看下面的实例：
+
+```C++
+#include <iostream>
+#include <csignal>
+#include <unistd.h>
+ 
+using namespace std;
+ 
+void signalHandler( int signum )
+{
+    cout << "Interrupt signal (" << signum << ") received.\n";
+ 
+    // 清理并关闭
+    // 终止程序  
+ 
+   exit(signum);  
+ 
+}
+ 
+int main ()
+{
+    // 注册信号 SIGINT 和信号处理程序
+    signal(SIGINT, signalHandler);  
+ 
+    while(1){
+       cout << "Going to sleep...." << endl;
+       sleep(1);
+    }
+ 
+    return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+Going to sleep....
+Going to sleep....
+Going to sleep....
+```
+
+现在，按 Ctrl+C 来中断程序，您会看到程序捕获信号，程序打印如下内容并退出：
+
+```
+Going to sleep....
+Going to sleep....
+Going to sleep....
+Interrupt signal (2) received.
+```
+
+### raise() 函数
+
+您可以使用函数 **raise()** 生成信号，该函数带有一个整数信号编号作为参数，语法如下：
+
+```
+int raise (signal sig);
+```
+
+在这里，**sig** 是要发送的信号的编号，这些信号包括：SIGINT、SIGABRT、SIGFPE、SIGILL、SIGSEGV、SIGTERM、SIGHUP。以下是我们使用 raise() 函数内部生成信号的实例：
+
+```C++
+#include <iostream>
+#include <csignal>
+#include <unistd.h>
+ 
+using namespace std;
+ 
+void signalHandler( int signum )
+{
+    cout << "Interrupt signal (" << signum << ") received.\n";
+ 
+    // 清理并关闭
+    // 终止程序 
+ 
+   exit(signum);  
+ 
+}
+ 
+int main ()
+{
+    int i = 0;
+    // 注册信号 SIGINT 和信号处理程序
+    signal(SIGINT, signalHandler);  
+ 
+    while(++i){
+       cout << "Going to sleep...." << endl;
+       if( i == 3 ){
+          raise( SIGINT);
+       }
+       sleep(1);
+    }
+ 
+    return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果，并会自动退出：
+
+```
+Going to sleep....
+Going to sleep....
+Going to sleep....
+Interrupt signal (2) received.
+```
+
+
+
+**Sleep 函数**
+
+功能：执行挂起一段时间，也就是等待一段时间在继续执行
+
+用法：**Sleep(时间)**
+
+**注意：**
+
+-  （1）Sleep 是区分大小写的，有的编译器是大写，有的是小写。
+-  （2）Sleep 括号里的时间，在 Windows 下是以毫秒为单位，而 Linux 是以秒为单位。
+
+```C++
+#include <iostream>
+#include <windows.h>
+
+using namespace std;
+
+int main()
+{
+    int a = 1;
+    while (a)
+    {
+        cout << "欢迎来到菜鸟教程！" << endl;
+        Sleep(100);
+    }
+    system("pause");
+    return 0;
+}
+```
+
+
+
+Linux 用 **#include <unistd.h>** 和 **sleep()**，Windos 用 **#include <windows.h>** 和 **Sleep()**。
+
+```C++
+#include <iostream>
+#include <csignal>
+#include <windows.h>
+
+using namespace std;
+
+void signalHandler(int signum)
+{
+    cout << "Interrupt signal (" << signum << ") received.\n";
+
+    // 清理并关闭
+    // 终止程序  
+
+    exit(signum);
+
+}
+
+int main()
+{
+    int i = 0;
+    // 注册信号 SIGINT 和信号处理程序
+    signal(SIGINT, signalHandler);
+
+    while (++i) {
+        cout << "Going to sleep...." << endl;
+        if (i == 3) {
+            raise(SIGINT);
+        }
+        Sleep(1);
+    }
+
+    return 0;
+}
+```
+
 
 
 ## [C++ 多线程](https://www.runoob.com/cplusplus/cpp-multithreading.html)
 
+多线程是多任务处理的一种特殊形式，多任务处理允许让电脑同时运行两个或两个以上的程序。一般情况下，两种类型的多任务处理：**基于进程和基于线程**。
+
+- 基于进程的多任务处理是程序的并发执行。
+- 基于线程的多任务处理是同一程序的片段的并发执行。
+
+多线程程序包含可以同时运行的两个或多个部分。这样的程序中的每个部分称为一个线程，每个线程定义了一个单独的执行路径。
+
+本教程假设您使用的是 Linux 操作系统，我们要使用 POSIX 编写多线程 C++ 程序。POSIX Threads 或 Pthreads 提供的 API 可在多种类 Unix POSIX 系统上可用，比如 FreeBSD、NetBSD、GNU/Linux、Mac OS X 和 Solaris。
+
+### 创建线程
+
+下面的程序，我们可以用它来创建一个 POSIX 线程：
+
+```C++
+#include <pthread.h>
+pthread_create (thread, attr, start_routine, arg) 
+```
+
+在这里，**pthread_create** 创建一个新的线程，并让它可执行。下面是关于参数的说明：
+
+| 参数          | 描述                                                         |
+| :------------ | :----------------------------------------------------------- |
+| thread        | 指向线程标识符指针。                                         |
+| attr          | 一个不透明的属性对象，可以被用来设置线程属性。您可以指定线程属性对象，也可以使用默认值 NULL。 |
+| start_routine | 线程运行函数起始地址，一旦线程被创建就会执行。               |
+| arg           | 运行函数的参数。它必须通过把引用作为指针强制转换为 void 类型进行传递。如果没有传递参数，则使用 NULL。 |
+
+创建线程成功时，函数返回 0，若返回值不为 0 则说明创建线程失败。
+
+### 终止线程
+
+使用下面的程序，我们可以用它来终止一个 POSIX 线程：
+
+```
+#include <pthread.h>
+pthread_exit (status) 
+```
+
+在这里，**pthread_exit** 用于显式地退出一个线程。通常情况下，pthread_exit() 函数是在线程完成工作后无需继续存在时被调用。
+
+如果 main() 是在它所创建的线程之前结束，并通过 pthread_exit() 退出，那么其他线程将继续执行。否则，它们将在 main() 结束时自动被终止。
+
+### 实例
+
+以下简单的实例代码使用 pthread_create() 函数创建了 5 个线程，每个线程输出"Hello Runoob！":
+
+```C++
+#include <iostream>
+// 必须的头文件
+#include <pthread.h>
+ 
+using namespace std;
+ 
+#define NUM_THREADS 5
+ 
+// 线程的运行函数
+void* say_hello(void* args)
+{
+    cout << "Hello Runoob！" << endl;
+    return 0;
+}
+ 
+int main()
+{
+    // 定义线程的 id 变量，多个变量使用数组
+    pthread_t tids[NUM_THREADS];
+    for(int i = 0; i < NUM_THREADS; ++i)
+    {
+        //参数依次是：创建的线程id，线程参数，调用的函数，传入的函数参数
+        int ret = pthread_create(&tids[i], NULL, say_hello, NULL);
+        if (ret != 0)
+        {
+           cout << "pthread_create error: error_code=" << ret << endl;
+        }
+    }
+    //等各个线程退出后，进程才结束，否则进程强制结束了，线程可能还没反应过来；
+    pthread_exit(NULL);
+}
+```
+
+使用 -lpthread 库编译下面的程序：
+
+```
+$ g++ test.cpp -lpthread -o test.o
+```
+
+现在，执行程序，将产生下列结果：
+
+```
+$ ./test.o
+Hello Runoob！
+Hello Runoob！
+Hello Runoob！
+Hello Runoob！
+Hello Runoob！
+```
+
+以下简单的实例代码使用 pthread_create() 函数创建了 5 个线程，并接收传入的参数。每个线程打印一个 "Hello Runoob!" 消息，并输出接收的参数，然后调用 pthread_exit() 终止线程。
+
+```C++
+//文件名：test.cpp
+ 
+#include <iostream>
+#include <cstdlib>
+#include <pthread.h>
+ 
+using namespace std;
+ 
+#define NUM_THREADS     5
+ 
+void *PrintHello(void *threadid)
+{  
+   // 对传入的参数进行强制类型转换，由无类型指针变为整形数指针，然后再读取
+   int tid = *((int*)threadid);
+   cout << "Hello Runoob! 线程 ID, " << tid << endl;
+   pthread_exit(NULL);
+}
+ 
+int main ()
+{
+   pthread_t threads[NUM_THREADS];
+   int indexes[NUM_THREADS];// 用数组来保存i的值
+   int rc;
+   int i;
+   for( i=0; i < NUM_THREADS; i++ ){      
+      cout << "main() : 创建线程, " << i << endl;
+      indexes[i] = i; //先保存i的值
+      // 传入的时候必须强制转换为void* 类型，即无类型指针        
+      rc = pthread_create(&threads[i], NULL, 
+                          PrintHello, (void *)&(indexes[i]));
+      if (rc){
+         cout << "Error:无法创建线程," << rc << endl;
+         exit(-1);
+      }
+   }
+   pthread_exit(NULL);
+}
+```
+
+现在编译并执行程序，将产生下列结果：
+
+```
+$ g++ test.cpp -lpthread -o test.o
+$ ./test.o
+main() : 创建线程, 0
+main() : 创建线程, 1
+Hello Runoob! 线程 ID, 0
+main() : 创建线程, Hello Runoob! 线程 ID, 21
+
+main() : 创建线程, 3
+Hello Runoob! 线程 ID, 2
+main() : 创建线程, 4
+Hello Runoob! 线程 ID, 3
+Hello Runoob! 线程 ID, 4
+```
+
+### 向线程传递参数
+
+这个实例演示了如何通过结构传递多个参数。您可以在线程回调中传递任意的数据类型，因为它指向 void，如下面的实例所示：
+
+```C++
+#include <iostream>
+#include <cstdlib>
+#include <pthread.h>
+ 
+using namespace std;
+ 
+#define NUM_THREADS     5
+ 
+struct thread_data{
+   int  thread_id;
+   char *message;
+};
+ 
+void *PrintHello(void *threadarg)
+{
+   struct thread_data *my_data;
+ 
+   my_data = (struct thread_data *) threadarg;
+ 
+   cout << "Thread ID : " << my_data->thread_id ;
+   cout << " Message : " << my_data->message << endl;
+ 
+   pthread_exit(NULL);
+}
+ 
+int main ()
+{
+   pthread_t threads[NUM_THREADS];
+   struct thread_data td[NUM_THREADS];
+   int rc;
+   int i;
+ 
+   for( i=0; i < NUM_THREADS; i++ ){
+      cout <<"main() : creating thread, " << i << endl;
+      td[i].thread_id = i;
+      td[i].message = (char*)"This is message";
+      rc = pthread_create(&threads[i], NULL,
+                          PrintHello, (void *)&td[i]);
+      if (rc){
+         cout << "Error:unable to create thread," << rc << endl;
+         exit(-1);
+      }
+   }
+   pthread_exit(NULL);
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+$ g++ -Wno-write-strings test.cpp -lpthread -o test.o
+$ ./test.o
+main() : creating thread, 0
+main() : creating thread, 1
+Thread ID : 0 Message : This is message
+main() : creating thread, Thread ID : 21
+ Message : This is message
+main() : creating thread, 3
+Thread ID : 2 Message : This is message
+main() : creating thread, 4
+Thread ID : 3 Message : This is message
+Thread ID : 4 Message : This is message
+```
+
+### 连接和分离线程
+
+我们可以使用以下两个函数来连接或分离线程：
+
+```
+pthread_join (threadid, status) 
+pthread_detach (threadid) 
+```
+
+pthread_join() 子程序阻碍调用程序，直到指定的 threadid 线程终止为止。当创建一个线程时，它的某个属性会定义它是否是可连接的（joinable）或可分离的（detached）。只有创建时定义为可连接的线程才可以被连接。如果线程创建时被定义为可分离的，则它永远也不能被连接。
+
+这个实例演示了如何使用 pthread_join() 函数来等待线程的完成。
+
+```C++
+#include <iostream>
+#include <cstdlib>
+#include <pthread.h>
+#include <unistd.h>
+ 
+using namespace std;
+ 
+#define NUM_THREADS     5
+ 
+void *wait(void *t)
+{
+   int i;
+   long tid;
+ 
+   tid = (long)t;
+ 
+   sleep(1);
+   cout << "Sleeping in thread " << endl;
+   cout << "Thread with id : " << tid << "  ...exiting " << endl;
+   pthread_exit(NULL);
+}
+ 
+int main ()
+{
+   int rc;
+   int i;
+   pthread_t threads[NUM_THREADS];
+   pthread_attr_t attr;
+   void *status;
+ 
+   // 初始化并设置线程为可连接的（joinable）
+   pthread_attr_init(&attr);
+   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+ 
+   for( i=0; i < NUM_THREADS; i++ ){
+      cout << "main() : creating thread, " << i << endl;
+      rc = pthread_create(&threads[i], NULL, wait, (void *)&i );
+      if (rc){
+         cout << "Error:unable to create thread," << rc << endl;
+         exit(-1);
+      }
+   }
+ 
+   // 删除属性，并等待其他线程
+   pthread_attr_destroy(&attr);
+   for( i=0; i < NUM_THREADS; i++ ){
+      rc = pthread_join(threads[i], &status);
+      if (rc){
+         cout << "Error:unable to join," << rc << endl;
+         exit(-1);
+      }
+      cout << "Main: completed thread id :" << i ;
+      cout << "  exiting with status :" << status << endl;
+   }
+ 
+   cout << "Main: program exiting." << endl;
+   pthread_exit(NULL);
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+main() : creating thread, 0
+main() : creating thread, 1
+main() : creating thread, 2
+main() : creating thread, 3
+main() : creating thread, 4
+Sleeping in thread 
+Thread with id : 4  ...exiting 
+Sleeping in thread 
+Thread with id : 3  ...exiting 
+Sleeping in thread 
+Thread with id : 2  ...exiting 
+Sleeping in thread 
+Thread with id : 1  ...exiting 
+Sleeping in thread 
+Thread with id : 0  ...exiting 
+Main: completed thread id :0  exiting with status :0
+Main: completed thread id :1  exiting with status :0
+Main: completed thread id :2  exiting with status :0
+Main: completed thread id :3  exiting with status :0
+Main: completed thread id :4  exiting with status :0
+Main: program exiting.
+```
+
+> 更多实例参考：[http://www.runoob.com/w3cnote/cpp-multithread-demo.html](https://www.runoob.com/w3cnote/cpp-multithread-demo.html)
+
+要注意内存泄露问题。
+
+如果设置为 **PTHREAD_CREATE_JOINABLE**，就继续用 **pthread_join()** 来等待和释放资源，否则会内存泄露。
+
+### C++ 11 标准线程库：
+
+```C++
+#include <iostream>
+
+#include <thread>
+
+std::thread::id main_thread_id = std::this_thread::get_id();
+
+void hello()  
+{
+    std::cout << "Hello Concurrent World\n";
+    if (main_thread_id == std::this_thread::get_id())
+        std::cout << "This is the main thread.\n";
+    else
+        std::cout << "This is not the main thread.\n";
+}
+
+void pause_thread(int n) {
+    std::this_thread::sleep_for(std::chrono::seconds(n));
+    std::cout << "pause of " << n << " seconds ended\n";
+}
+
+int main() {
+    std::thread t(hello);
+    std::cout << t.hardware_concurrency() << std::endl;//可以并发执行多少个(不准确)
+    std::cout << "native_handle " << t.native_handle() << std::endl;//可以并发执行多少个(不准确)
+    t.join();
+    std::thread a(hello);
+    a.detach();
+    std::thread threads[5];                         // 默认构造线程
+
+    std::cout << "Spawning 5 threads...\n";
+    for (int i = 0; i < 5; ++i)
+        threads[i] = std::thread(pause_thread, i + 1);   // move-assign threads
+    std::cout << "Done spawning threads. Now waiting for them to join:\n";
+    for (auto &thread : threads)
+        thread.join();
+    std::cout << "All threads joined!\n";
+}
+```
+
+之前一些编译器使用 C++11 的编译参数是 **-std=c++11**
+
+```
+g++ -std=c++11 test.cpp -lpthread
+```
+
 
 
 ## [C++ Web 编程](https://www.runoob.com/cplusplus/cpp-web-programming.html)
+
+### 什么是 CGI？
+
+- 公共网关接口（CGI），是一套标准，定义了信息是如何在 Web 服务器和客户端脚本之间进行交换的。
+- CGI 规范目前是由 NCSA 维护的，NCSA 定义 CGI 如下：
+- 公共网关接口（CGI），是一种用于外部网关程序与信息服务器（如 HTTP 服务器）对接的接口标准。
+- 目前的版本是 CGI/1.1，CGI/1.2 版本正在推进中。
+
+### Web 浏览
+
+为了更好地了解 CGI 的概念，让我们点击一个超链接，浏览一个特定的网页或 URL，看看会发生什么。
+
+- 您的浏览器联系上 HTTP Web 服务器，并请求 URL，即文件名。
+- Web 服务器将解析 URL，并查找文件名。如果找到请求的文件，Web 服务器会把文件发送回浏览器，否则发送一条错误消息，表明您请求了一个错误的文件。
+- Web 浏览器从 Web 服务器获取响应，并根据接收到的响应来显示文件或错误消息。
+
+然而，以这种方式搭建起来的 HTTP 服务器，不管何时请求目录中的某个文件，HTTP 服务器发送回来的不是该文件，而是以程序形式执行，并把执行产生的输出发送回浏览器显示出来。
+
+公共网关接口（CGI），是使得应用程序（称为 CGI 程序或 CGI 脚本）能够与 Web 服务器以及客户端进行交互的标准协议。这些 CGI 程序可以用 Python、PERL、Shell、C 或 C++ 等进行编写。
+
+### CGI 架构图
+
+下图演示了 CGI 的架构：
+
+![CGI 架构](https://www.runoob.com/wp-content/uploads/2015/05/cgiarch.gif)
+
+### Web 服务器配置
+
+在您进行 CGI 编程之前，请确保您的 Web 服务器支持 CGI，并已配置成可以处理 CGI 程序。所有由 HTTP 服务器执行的 CGI 程序，都必须在预配置的目录中。该目录称为 CGI 目录，按照惯例命名为 /var/www/cgi-bin。虽然 CGI 文件是 C++ 可执行文件，但是按照惯例它的扩展名是 **.cgi**。
+
+默认情况下，Apache Web 服务器会配置在 /var/www/cgi-bin 中运行 CGI 程序。如果您想指定其他目录来运行 CGI 脚本，您可以在 httpd.conf 文件中修改以下部分：
+
+```
+<Directory "/var/www/cgi-bin">
+   AllowOverride None
+   Options ExecCGI
+   Order allow,deny
+   Allow from all
+</Directory>
+ 
+<Directory "/var/www/cgi-bin">
+Options All
+</Directory>
+```
+
+在这里，我们假设已经配置好 Web 服务器并能成功运行，你可以运行任意的 CGI 程序，比如 Perl 或 Shell 等。
+
+## 第一个 CGI 程序
+
+请看下面的 C++ 程序：
+
+```C++
+#include <iostream>
+using namespace std;
+ 
+int main ()
+{
+    
+   cout << "Content-type:text/html\r\n\r\n";
+   cout << "<html>\n";
+   cout << "<head>\n";
+   cout << "<title>Hello World - 第一个 CGI 程序</title>\n";
+   cout << "</head>\n";
+   cout << "<body>\n";
+   cout << "<h2>Hello World! 这是我的第一个 CGI 程序</h2>\n";
+   cout << "</body>\n";
+   cout << "</html>\n";
+   
+   return 0;
+}
+```
+
+编译上面的代码，把可执行文件命名为 cplusplus.cgi，并把这个文件保存在 /var/www/cgi-bin 目录中。在运行 CGI 程序之前，请使用 **chmod 755 cplusplus.cgi** UNIX 命令来修改文件模式，确保文件可执行。
+
+### HTTP 头信息
+
+行 **Content-type:text/html\r\n\r\n** 是 HTTP 头信息的组成部分，它被发送到浏览器，以便更好地理解页面内容。HTTP 头信息的形式如下：
+
+```
+HTTP 字段名称: 字段内容
+ 
+例如
+Content-type: text/html\r\n\r\n
+```
+
+还有一些其他的重要的 HTTP 头信息，这些在您的 CGI 编程中都会经常被用到。
+
+| 头信息              | 描述                                                         |
+| :------------------ | :----------------------------------------------------------- |
+| Content-type:       | MIME 字符串，定义返回的文件格式。例如 Content-type:text/html。 |
+| Expires: Date       | 信息变成无效的日期。浏览器使用它来判断一个页面何时需要刷新。一个有效的日期字符串的格式应为 01 Jan 1998 12:00:00 GMT。 |
+| Location: URL       | 这个 URL 是指应该返回的 URL，而不是请求的 URL。你可以使用它来重定向一个请求到任意的文件。 |
+| Last-modified: Date | 资源的最后修改日期。                                         |
+| Content-length: N   | 要返回的数据的长度，以字节为单位。浏览器使用这个值来表示一个文件的预计下载时间。 |
+| Set-Cookie: String  | 通过 *string* 设置 cookie。                                  |
+
+### CGI 环境变量
+
+所有的 CGI 程序都可以访问下列的环境变量。这些变量在编写 CGI 程序时扮演了非常重要的角色。
+
+| 变量名          | 描述                                                         |
+| :-------------- | :----------------------------------------------------------- |
+| CONTENT_TYPE    | 内容的数据类型。当客户端向服务器发送附加内容时使用。例如，文件上传等功能。 |
+| CONTENT_LENGTH  | 查询的信息长度。只对 POST 请求可用。                         |
+| HTTP_COOKIE     | 以键 & 值对的形式返回设置的 cookies。                        |
+| HTTP_USER_AGENT | 用户代理请求标头字段，递交用户发起请求的有关信息，包含了浏览器的名称、版本和其他平台性的附加信息。 |
+| PATH_INFO       | CGI 脚本的路径。                                             |
+| QUERY_STRING    | 通过 GET 方法发送请求时的 URL 编码信息，包含 URL 中问号后面的参数。 |
+| REMOTE_ADDR     | 发出请求的远程主机的 IP 地址。这在日志记录和认证时是非常有用的。 |
+| REMOTE_HOST     | 发出请求的主机的完全限定名称。如果此信息不可用，则可以用 REMOTE_ADDR 来获取 IP 地址。 |
+| REQUEST_METHOD  | 用于发出请求的方法。最常见的方法是 GET 和 POST。             |
+| SCRIPT_FILENAME | CGI 脚本的完整路径。                                         |
+| SCRIPT_NAME     | CGI 脚本的名称。                                             |
+| SERVER_NAME     | 服务器的主机名或 IP 地址。                                   |
+| SERVER_SOFTWARE | 服务器上运行的软件的名称和版本。                             |
+
+下面的 CGI 程序列出了所有的 CGI 变量。
+
+### C++ CGI 库
+
+在真实的实例中，您需要通过 CGI 程序执行许多操作。这里有一个专为 C++ 程序而编写的 CGI 库，我们可以从 [ftp://ftp.gnu.org/gnu/cgicc/](ftp://ftp.gnu.org/gnu/cgicc/) 上下载这个 CGI 库，并按照下面的步骤安装库：
 
 
 
@@ -4774,15 +6667,210 @@ Try Again? Enter y or n
 
 ## [C++ STL 教程](https://www.runoob.com/cplusplus/cpp-stl-tutorial.html)
 
+在前面的章节中，我们已经学习了 C++ 模板的概念。C++ STL（标准模板库）是一套功能强大的 C++ 模板类，提供了通用的模板类和函数，这些模板类和函数可以实现多种流行和常用的算法和数据结构，如向量、链表、队列、栈。
+
+C++ 标准模板库的核心包括以下三个组件：
+
+| 组件                | 描述                                                         |
+| :------------------ | :----------------------------------------------------------- |
+| 容器（Containers）  | 容器是用来管理某一类对象的集合。C++ 提供了各种不同类型的容器，比如 deque、list、vector、map 等。 |
+| 算法（Algorithms）  | 算法作用于容器。它们提供了执行各种操作的方式，包括对容器内容执行初始化、排序、搜索和转换等操作。 |
+| 迭代器（iterators） | 迭代器用于遍历对象集合的元素。这些集合可能是容器，也可能是容器的子集。 |
+
+这三个组件都带有丰富的预定义函数，帮助我们通过简单的方式处理复杂的任务。
+
+下面的程序演示了向量容器（一个 C++ 标准的模板），它与数组十分相似，唯一不同的是，向量在需要扩展大小的时候，会自动处理它自己的存储需求：
+
+```C++
+#include <iostream>
+#include <vector>
+using namespace std;
+ 
+int main()
+{
+   // 创建一个向量存储 int
+   vector<int> vec; 
+   int i;
+ 
+   // 显示 vec 的原始大小
+   cout << "vector size = " << vec.size() << endl;
+ 
+   // 推入 5 个值到向量中
+   for(i = 0; i < 5; i++){
+      vec.push_back(i);
+   }
+ 
+   // 显示 vec 扩展后的大小
+   cout << "extended vector size = " << vec.size() << endl;
+ 
+   // 访问向量中的 5 个值
+   for(i = 0; i < 5; i++){
+      cout << "value of vec [" << i << "] = " << vec[i] << endl;
+   }
+ 
+   // 使用迭代器 iterator 访问值
+   vector<int>::iterator v = vec.begin();
+   while( v != vec.end()) {
+      cout << "value of v = " << *v << endl;
+      v++;
+   }
+ 
+   return 0;
+}
+```
+
+当上面的代码被编译和执行时，它会产生下列结果：
+
+```
+vector size = 0
+extended vector size = 5
+value of vec [0] = 0
+value of vec [1] = 1
+value of vec [2] = 2
+value of vec [3] = 3
+value of vec [4] = 4
+value of v = 0
+value of v = 1
+value of v = 2
+value of v = 3
+value of v = 4
+```
+
+关于上面实例中所使用的各种函数，有几点要注意：
+
+- push_back( ) 成员函数在向量的末尾插入值，如果有必要会扩展向量的大小。
+- size( ) 函数显示向量的大小。
+- begin( ) 函数返回一个指向向量开头的迭代器。
+- end( ) 函数返回一个指向向量末尾的迭代器。
+
+### C++ STL 之 vector 的 capacity 和 size 属性区别
+
+**size** 是当前 vector 容器真实占用的大小，也就是容器当前拥有多少个容器。
+
+**capacity** 是指在发生 realloc 前能允许的最大元素数，即预分配的内存空间。
+
+当然，这两个属性分别对应两个方法：**resize()** 和 **reserve()**。
+
+使用 **resize()** 容器内的对象内存空间是真正存在的。
+
+使用 **reserve()** 仅仅只是修改了 capacity 的值，容器内的对象并没有真实的内存空间(空间是"野"的)。
+
+此时切记使用 **[]** 操作符访问容器内的对象，很可能出现数组越界的问题。
+
+**下面用例子进行说明：**
+
+```
+#include <iostream>
+#include <vector>
+
+using std::vector;
+int main(void)
+{
+    vector<int> v;
+    std::cout<<"v.size() == " << v.size() << " v.capacity() = " << v.capacity() << std::endl;
+    v.reserve(10);
+    std::cout<<"v.size() == " << v.size() << " v.capacity() = " << v.capacity() << std::endl;
+    v.resize(10);
+    v.push_back(0);
+    std::cout<<"v.size() == " << v.size() << " v.capacity() = " << v.capacity() << std::endl;
+
+    return 0;
+}
+```
+
+运行结果为：(win 10 + VS2010)
+
+![img](https://www.runoob.com/wp-content/uploads/2018/05/20160417222951238.png)
+
+**注：** 对于 **reserve(10)** 后接着直接使用 **[]** 访问越界报错(内存是野的)，大家可以加一行代码试一下，我这里没有贴出来。
+
+这里直接用**[]**访问，vector 退化为数组，不会进行越界的判断。此时推荐使用 at()，会先进行越界检查。
+
+> **相关引申：**
+>
+> 针对 capacity 这个属性，STL 中的其他容器，如 list map set deque，由于这些容器的内存是散列分布的，因此不会发生类似 realloc() 的调用情况，因此我们可以认为 capacity 属性针对这些容器是没有意义的，因此设计时这些容器没有该属性。
+>
+> 在 STL 中，拥有 capacity 属性的容器只有 vector 和 string。
+
 
 
 ## [C++ 标准库](https://www.runoob.com/cplusplus/cpp-standard-library.html)
+
+C++ 标准库可以分为两部分：
+
+- **标准函数库：** 这个库是由通用的、独立的、不属于任何类的函数组成的。函数库继承自 C 语言。
+- **面向对象类库：** 这个库是类及其相关函数的集合。
+
+C++ 标准库包含了所有的 C 标准库，为了支持类型安全，做了一定的添加和修改。
+
+### 标准函数库
+
+标准函数库分为以下几类：
+
+- 输入/输出 I/O
+- 字符串和字符处理
+- 数学
+- 时间、日期和本地化
+- 动态分配
+- 其他
+- 宽字符函数
+
+### 面向对象类库
+
+标准的 C++ 面向对象类库定义了大量支持一些常见操作的类，比如输入/输出 I/O、字符串处理、数值处理。面向对象类库包含以下内容：
+
+- 标准的 C++ I/O 类
+- String 类
+- 数值类
+- STL 容器类
+- STL 算法
+- STL 函数对象
+- STL 迭代器
+- STL 分配器
+- 本地化库
+- 异常处理类
+- 杂项支持库
 
 
 
 ## [C++ 有用的资源](https://www.runoob.com/cplusplus/cpp-useful-resources.html)
 
+以下资源包含了 C++ 有关的网站、书籍和文章。请使用它们来进一步学习 C++ 的知识。
 
+### C++ 有用的网站
+
+- [C++ Standard Library headers](https://en.cppreference.com/w/cpp/header) − C++ 标准库。
+- [C++ Programming](http://en.wikibooks.org/wiki/C++_Programming) − 这本书涵盖了 C++ 语言编程、软件交互设计、C++ 语言的现实生活应用。
+- [C++ FAQ](http://www.sunistudio.com/cppfaq/) − C++ 常见问题
+- [Free Country](http://www.thefreecountry.com/sourcecode/cpp.shtml) − Free Country 提供了免费的 C++ 源代码和 C++ 库，这些源代码和库涵盖了压缩、存档、游戏编程、标准模板库和 GUI 编程等 C++ 编程领域。
+- [C and C++ Users Group](http://www.hal9k.com/cug/) − C 和 C++ 的用户团体提供了免费的涵盖各种编程领域 C++ 项目的源代码，包括 AI、动画、编译器、数据库、调试、加密、游戏、图形、GUI、语言工具、系统编程等。
+
+### C++ 有用的书籍
+
+- 《Essential C++ 中文版》
+- 《C++ Primer Plus 第6版中文版》
+- 《C++ Primer中文版（第5版）》
 
 ## [C++ 实例](https://www.runoob.com/cplusplus/cpp-examples.html)
+
+- [C++ 实例 - 输出 "Hello, World!"](https://www.runoob.com/cplusplus/cpp-examples-cout-helloworld.html)
+- [C++ 实例 - 标准输入输出](https://www.runoob.com/cplusplus/cpp-examples-cout-cin.html)
+- [C++ 实例 - 输出换行](https://www.runoob.com/cplusplus/cpp-examples-endl.html)
+- [C++ 实例 - 实现两个数相加](https://www.runoob.com/cplusplus/cpp-examples-add-numbers.html)
+- [C++ 实例 - 创建不同类型的变量](https://www.runoob.com/cplusplus/cpp-examples-data-types.html)
+- [C++ 实例 - 求商及余数](https://www.runoob.com/cplusplus/cpp-examples-quotient-remainder.html)
+- [C++ 实例 - 查看 int, float, double 和 char 变量大小](https://www.runoob.com/cplusplus/cpp-examples-sizeof-operator.html)
+- [C++ 实例 - 交换两个数](https://www.runoob.com/cplusplus/cpp-examples-swapping.html)
+- [C++ 实例 - 判断一个数是奇数还是偶数](https://www.runoob.com/cplusplus/cpp-examples-even-odd.html)
+- [C++ 实例 - 判断元音/辅音](https://www.runoob.com/cplusplus/cpp-examples-vowel-consonant.html)
+- [C++ 实例 - 判断三个数中的最大数](https://www.runoob.com/cplusplus/cpp-examples-largest-number-among-three.html)
+- [C++ 实例 - 求一元二次方程的根](https://www.runoob.com/cplusplus/cpp-examples-quadratic-roots.html)
+- [C++ 实例 - 计算自然数之和](https://www.runoob.com/cplusplus/cpp-examples-sum-natural-number.html)
+- [C++ 实例 - 判断闰年](https://www.runoob.com/cplusplus/cpp-examples-leap-year.html)
+- [C++ 实例 - 求一个数的阶乘](https://www.runoob.com/cplusplus/cpp-examples-factorial.html)
+- [C++ 实例 - 创建各类三角形图案](https://www.runoob.com/cplusplus/cpp-examples-pyramid-pattern.html)
+- [C++ 实例 - 求两数的最大公约数](https://www.runoob.com/cplusplus/cpp-examples-hcf-gcd.html)
+- [C++ 实例 - 求两数最小公倍数](https://www.runoob.com/cplusplus/cpp-examples-lcm.html)
+- [C++ 实例 - 实现一个简单的计算器](https://www.runoob.com/cplusplus/cpp-examples-calculator-switch-case.html)
+- [猴子吃桃问题](https://www.runoob.com/cplusplus/cpp-examples-monkey-eating-peach.html)
 
