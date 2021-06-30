@@ -7,8 +7,6 @@ int Student::csCount = 0;
 int Student::maCount = 0;
 int Student::buCount = 0;
 Student::Student(char name[20], char sex, char college[3], int year, int colNum) {
-	//this->name = name;
-	//this->college = college;
 	strcpy_s(this->name, name);
 	strcpy_s(this->college, college);
 	this->sex = sex;

@@ -1,8 +1,11 @@
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include <string>
+
 using namespace std;
-// Class to define the properties
+void display();
+
 class Student
 {
 private:
@@ -11,35 +14,76 @@ public:
 	static int csCount;
 	static int maCount;
 	static int buCount;
+	//int studNum = 1;
+	//string name = "1";
+	//char sex = 'F';
+	//string college = "1";
+	//int year = 1;
+	//int colNum = 1;
 	int studNum = 123;
-	string name = "Johna是撒旦";
+	char name[10] = "小王";
 	char sex = 'F';
-	string college = "CC";
-	int year = 2019;
-	int colNum = 44;
-	Student() {};
+	char college[3] = "CS";
+	int year = 3453;
+	int colNum = 99;
+	void print()
+	{
+		cout << "学号：" << studNum << "  姓名：" << name << "  性别：" << sex << "  学院：" << college << "  入学年份：" << year << "  学院顺序号：" << colNum << endl;
+	};
 };
-// int Employee::a = 1;
+void Save() {
+	Student stud;
+	ofstream file1;
+	file1.open("cs.txt", ios::out | ios::binary);
+	file1.write((char*)&stud, sizeof(stud));
+	file1.close();
+};
+void Read() {
+	Student stud2;
+	ifstream file2;
+	file2.open("cs.txt", ios::in | ios::binary);
+	file2.read((char*)&stud2, sizeof(stud2));
+	stud2.print();
+	system("pause");
+	system("cls");
+	file2.close();
+}
 int main()
 {
-	Student Emp_1;
-	// // Emp_1.Name = "John";
-	// // Emp_1.Employee_ID = 2121;
-	// // Emp_1.Salary = 11000;
-	// //Wriring this data to Employee.txt
-	 //ofstream file1;
-	 //file1.open("Employee.txt", ios::out | ios::binary);
-	 //file1.write((char *)&Emp_1, sizeof(Emp_1));
-	 //file1.close();
-	//Reading data from EMployee.txt
-	ifstream file2;
-	file2.open("Employee.txt", ios::in | ios::binary);
-	file2.seekg(0);
-	file2.read((char*)&Emp_1, sizeof(Emp_1));
-	cout << "Name:" << Emp_1.name << endl;
-	cout << "Employee ID:" << Emp_1.studNum << endl;
-	cout << "Salary ::" << Emp_1.college << endl;
-	cout << "a ::" << Emp_1.year << endl;
-	file2.close();
+	while (true) {
+		display();
+		int cho;
+		cin >> cho;
+		switch (cho) {
+		case 1: { // 输入学生信息
+			system("cls");
+			Save();
+			break;
+		}
+		case 2: { // 打印学生信息
+			system("cls");
+			Read();
+			break;
+		}
+		case 0:
+		{ // 退出
+			cout << "已退出" << endl;
+			return 0;
+		}
+		default: {
+			cout << "输入不正确!" << endl;
+			system("pause");
+			system("cls");
+			break;
+		}
+		}
+	}
 	return 0;
+}
+
+void display() {
+	cout << "1:输入学生信息\n" << endl;
+	cout << "2:打印学生信息\n" << endl;
+	cout << "0:退出\n" << endl;
+	cout << "请输入对应的序号：" << endl;
 }

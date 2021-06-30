@@ -50,6 +50,7 @@ int main() {
 			break;
 		}
 		case 7: { // 读取学生信息
+			system("cls");
 			Read();
 			cout << "读取成功！" << endl;
 			system("pause");
@@ -104,8 +105,6 @@ void input() {
 	cin >> t;
 	cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 	for (int i = 0; i < t; i++) {
-		//string name;
-		//string college;
 		char name[20];
 		char college[3];
 		char sex;
@@ -162,8 +161,6 @@ void Ins() {
 	cin >> t;
 	cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 	for (int i = 0; i < t; i++) {
-		//string name;
-		//string college;
 		char name[20];
 		char college[3];
 		char sex;
@@ -311,12 +308,9 @@ void modify() {
 				int colNum;
 				cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 				cin >> name >> sex >> college >> year >> colNum;
-				//CSarr[i].name = name;
 				strcpy_s(CSarr[i].name, name);
 				strcpy_s(CSarr[i].college, college);
 				CSarr[i].sex = sex;
-				//CSarr[i].college = college;
-
 				CSarr[i].year = year;
 				CSarr[i].colNum = colNum;
 				CSarr[i].GenID();
@@ -333,8 +327,6 @@ void modify() {
 			{
 				MAarr[i].print();
 				cout << endl;
-				//string name;
-				//string college;
 				char name[20];
 				char college[3];
 				char sex;
@@ -342,10 +334,8 @@ void modify() {
 				int colNum;
 				cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 				cin >> name >> sex >> college >> year >> colNum;
-				//MAarr[i].name = name;
-				//MAarr[i].college = college;
-				strcpy_s(CSarr[i].name, name);
-				strcpy_s(CSarr[i].college, college);
+				strcpy_s(MAarr[i].name, name);
+				strcpy_s(MAarr[i].college, college);
 				MAarr[i].sex = sex;
 				MAarr[i].year = year;
 				MAarr[i].colNum = colNum;
@@ -363,8 +353,6 @@ void modify() {
 			{
 				BUarr[i].print();
 				cout << endl;
-				//string name;
-				//string college;
 				char name[20];
 				char college[3];
 				char sex;
@@ -372,10 +360,8 @@ void modify() {
 				int colNum;
 				cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 				cin >> name >> sex >> college >> year >> colNum;
-				//BUarr[i].name = name;
-				//BUarr[i].college = college;
-				strcpy_s(CSarr[i].name, name);
-				strcpy_s(CSarr[i].college, college);
+				strcpy_s(BUarr[i].name, name);
+				strcpy_s(BUarr[i].college, college);
 				BUarr[i].sex = sex;
 				BUarr[i].year = year;
 				BUarr[i].colNum = colNum;
@@ -436,17 +422,47 @@ void Sort() {
 }
 
 void Save() {
-	ofstream file("CS.dat", ios::out | ios::binary);
+	ofstream fileCS("CS.dat", ios::out | ios::binary);
 	for (int i = 0; i < CSarr.size(); i++) {
-		file.write((char*)&CSarr[i], sizeof(Student));
+		fileCS.write((char*)&CSarr[i], sizeof(Student));
 	}
-	file.close();
+	ofstream fileMA("MA.dat", ios::out | ios::binary);
+	for (int i = 0; i < MAarr.size(); i++) {
+		fileMA.write((char*)&MAarr[i], sizeof(Student));
+	}
+	ofstream fileBU("BU.dat", ios::out | ios::binary);
+	for (int i = 0; i < BUarr.size(); i++) {
+		fileBU.write((char*)&BUarr[i], sizeof(Student));
+	}
+	fileCS.close();
+	fileMA.close();
+	fileBU.close();
 }
 void Read() {
 	Student stud;
-	ifstream file("CS.dat", ios::in | ios::binary);
-	file.read((char*)&stud, sizeof(Student));
-	stud.print();
-	CSarr.push_back(stud);
-	file.close();
+	// CS
+	ifstream fileCS("CS.dat", ios::in | ios::binary);
+	while (fileCS.read((char*)&stud, sizeof(Student))) {
+		stud.print();
+		CSarr.push_back(stud);
+	}
+	// MA
+	ifstream fileMA("MA.dat", ios::in | ios::binary);
+	while (fileMA.read((char*)&stud, sizeof(Student))) {
+		stud.print();
+		MAarr.push_back(stud);
+	}
+	// BU
+	ifstream fileBU("BU.dat", ios::in | ios::binary);
+	while (fileBU.read((char*)&stud, sizeof(Student))) {
+		stud.print();
+		BUarr.push_back(stud);
+	}
+	Student::csCount = CSarr.size();
+	Student::maCount = MAarr.size();
+	Student::buCount = BUarr.size();
+	Student::total = CSarr.size() + MAarr.size() + BUarr.size();
+	fileCS.close();
+	fileMA.close();
+	fileBU.close();
 }
