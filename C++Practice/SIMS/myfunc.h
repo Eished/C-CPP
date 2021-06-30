@@ -8,3 +8,5 @@ void Del();
 void Ins();
 void modify();
 void Sort();
+void Save();
+void Read();

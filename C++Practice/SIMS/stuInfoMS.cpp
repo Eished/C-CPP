@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
-#include"Student.h"
-#include"myfunc.h"
+#include <fstream>
+#include "Student.h"
+#include "myfunc.h"
 
 using namespace std;
 
@@ -49,13 +50,15 @@ int main() {
 			break;
 		}
 		case 7: { // 读取学生信息
-			system("cls");
-
+			Read();
+			cout << "读取成功！" << endl;
 			system("pause");
 			system("cls");
 			break;
 		}
 		case 8: { // 保存
+			Save();
+			cout << "保存成功！" << endl;
 			system("pause");
 			system("cls");
 			break;
@@ -82,15 +85,30 @@ int main() {
 	return 0;
 }
 
+void display() {
+	cout << "1:输入学生信息\n" << endl;
+	cout << "2:打印学生信息\n" << endl;
+	cout << "3:插入学生信息\n" << endl;
+	cout << "4:查找学生信息\n" << endl;
+	cout << "5:修改学生信息\n" << endl;
+	cout << "6:删除学生信息\n" << endl;
+	cout << "7:读取学生信息\n" << endl;
+	cout << "8:保存学生信息\n" << endl;
+	cout << "9:按学号从小到大排序\n" << endl;
+	cout << "0:退出\n" << endl;
+	cout << "请输入对应的序号：" << endl;
+}
 void input() {
 	int t = 0;
 	cout << "输入学生人数：";
 	cin >> t;
 	cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 	for (int i = 0; i < t; i++) {
-		string name;
+		//string name;
+		//string college;
+		char name[20];
+		char college[3];
 		char sex;
-		string college;
 		int year;
 		int colNum;
 		cin >> name >> sex >> college >> year >> colNum;
@@ -113,20 +131,6 @@ void input() {
 			break;
 		}
 	}
-}
-
-void display() {
-	cout << "1:输入学生信息\n" << endl;
-	cout << "2:打印学生信息\n" << endl;
-	cout << "3:插入学生信息\n" << endl;
-	cout << "4:查找学生信息\n" << endl;
-	cout << "5:修改学生信息\n" << endl;
-	cout << "6:删除学生信息\n" << endl;
-	cout << "7:读取学生信息\n" << endl;
-	cout << "8:保存学生信息\n" << endl;
-	cout << "9:按学号从小到大排序\n" << endl;
-	cout << "0:退出\n" << endl;
-	cout << "请输入对应的序号：" << endl;
 }
 void printAll() {
 	cout << "总人数：" << Student::total << endl;
@@ -158,9 +162,11 @@ void Ins() {
 	cin >> t;
 	cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 	for (int i = 0; i < t; i++) {
-		string name;
+		//string name;
+		//string college;
+		char name[20];
+		char college[3];
 		char sex;
-		string college;
 		int year;
 		int colNum;
 		cin >> name >> sex >> college >> year >> colNum;
@@ -298,16 +304,19 @@ void modify() {
 			{
 				CSarr[i].print();
 				cout << endl;
-				string name;
+				char name[20];
+				char college[3];
 				char sex;
-				string college;
 				int year;
 				int colNum;
 				cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 				cin >> name >> sex >> college >> year >> colNum;
-				CSarr[i].name = name;
+				//CSarr[i].name = name;
+				strcpy_s(CSarr[i].name, name);
+				strcpy_s(CSarr[i].college, college);
 				CSarr[i].sex = sex;
-				CSarr[i].college = college;
+				//CSarr[i].college = college;
+
 				CSarr[i].year = year;
 				CSarr[i].colNum = colNum;
 				CSarr[i].GenID();
@@ -324,16 +333,20 @@ void modify() {
 			{
 				MAarr[i].print();
 				cout << endl;
-				string name;
+				//string name;
+				//string college;
+				char name[20];
+				char college[3];
 				char sex;
-				string college;
 				int year;
 				int colNum;
 				cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 				cin >> name >> sex >> college >> year >> colNum;
-				MAarr[i].name = name;
+				//MAarr[i].name = name;
+				//MAarr[i].college = college;
+				strcpy_s(CSarr[i].name, name);
+				strcpy_s(CSarr[i].college, college);
 				MAarr[i].sex = sex;
-				MAarr[i].college = college;
 				MAarr[i].year = year;
 				MAarr[i].colNum = colNum;
 				MAarr[i].GenID();
@@ -350,16 +363,20 @@ void modify() {
 			{
 				BUarr[i].print();
 				cout << endl;
-				string name;
+				//string name;
+				//string college;
+				char name[20];
+				char college[3];
 				char sex;
-				string college;
 				int year;
 				int colNum;
 				cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 				cin >> name >> sex >> college >> year >> colNum;
-				BUarr[i].name = name;
+				//BUarr[i].name = name;
+				//BUarr[i].college = college;
+				strcpy_s(CSarr[i].name, name);
+				strcpy_s(CSarr[i].college, college);
 				BUarr[i].sex = sex;
-				BUarr[i].college = college;
 				BUarr[i].year = year;
 				BUarr[i].colNum = colNum;
 				BUarr[i].GenID();
@@ -397,15 +414,15 @@ void Sort() {
 				if (studs[i].studNum > studs[j].studNum)
 				{
 					if (studs[i].studNum - studs[j].studNum > less) {
-					less = studs[i].studNum - studs[j].studNum;
-					temp = j;
+						less = studs[i].studNum - studs[j].studNum;
+						temp = j;
 					}
 				}
 			}
 			if (less) {
-			studs.insert(studs.begin()+i, studs[temp]);
-			studs.erase(studs.begin() + temp + 1);
-			less = 0;
+				studs.insert(studs.begin() + i, studs[temp]);
+				studs.erase(studs.begin() + temp + 1);
+				less = 0;
 			}
 		}
 	}
@@ -416,4 +433,20 @@ void Sort() {
 	for (int i = 0; i < studs.size(); i++) {
 		studs[i].print();
 	}
+}
+
+void Save() {
+	ofstream file("CS.dat", ios::out | ios::binary);
+	for (int i = 0; i < CSarr.size(); i++) {
+		file.write((char*)&CSarr[i], sizeof(Student));
+	}
+	file.close();
+}
+void Read() {
+	Student stud;
+	ifstream file("CS.dat", ios::in | ios::binary);
+	file.read((char*)&stud, sizeof(Student));
+	stud.print();
+	CSarr.push_back(stud);
+	file.close();
 }
