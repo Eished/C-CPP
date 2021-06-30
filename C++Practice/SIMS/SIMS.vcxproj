@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="myfunc.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="stuInfoMS.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="myfunc.h" />
     <ClInclude Include="Student.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
