@@ -269,6 +269,7 @@ int main() {
 			CScount = stud.studNum % 100;// 读最后一个对象的学号，作为起始值；乱序插入后有bug
 			CSi = i;// 初始化数组下标
 			i = 0;
+			fileCS.close();
 			// MA
 			ifstream fileMA("MA.dat", ios::in | ios::binary);
 			while (fileMA.read((char*)&stud, sizeof(Student))) {
@@ -279,6 +280,7 @@ int main() {
 			MAcount = stud.studNum % 100;
 			MAi = i;
 			i = 0;
+			fileMA.close();
 			// BU
 			ifstream fileBU("BU.dat", ios::in | ios::binary);
 			while (fileBU.read((char*)&stud, sizeof(Student))) {
@@ -289,6 +291,7 @@ int main() {
 			BUcount = stud.studNum % 100;
 			BUi = i;
 			stud.setTotal(CScount + MAcount + BUcount);
+			fileBU.close();
 			cout << "读取成功！" << endl;
 			system("pause");
 			system("cls");
@@ -302,20 +305,20 @@ int main() {
 					fileCS.write((char*)&CSarr[i], sizeof(Student));
 				}
 			}
+			fileCS.close();
 			ofstream fileMA("MA.dat", ios::out | ios::binary);
 			for (int i = 0; i < M; i++) {
 				if (MAarr[i].studNum > 0) {
 					fileMA.write((char*)&MAarr[i], sizeof(Student));
 				}
 			}
+			fileMA.close();
 			ofstream fileBU("BU.dat", ios::out | ios::binary);
 			for (int i = 0; i < M; i++) {
 				if (BUarr[i].studNum > 0) {
 					fileBU.write((char*)&BUarr[i], sizeof(Student));
 				}
 			}
-			fileCS.close();
-			fileMA.close();
 			fileBU.close();
 			cout << "保存成功！" << endl;
 			system("pause");
