@@ -54,3 +54,10 @@ void Student::GenID() {
 void Student::print() {
 	cout << "学号：" << studNum << "  姓名：" << name << "  性别：" << sex << "  学院：" << college << "  入学年份：" << year << "  学院顺序号：" << colNum << endl;
 }
+int Student::Total() {
+	return total;
+}
+
+void Student::setTotal(int total) {
+	this->total = total;
+}

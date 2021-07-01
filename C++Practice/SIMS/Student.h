@@ -4,10 +4,9 @@ using namespace std;
 class Student
 {
 private:
-
-public:
 	static int total;
-	static int csCount;
+public:
+	static int csCount; // 学号，只增不减
 	static int maCount;
 	static int buCount;
 	int studNum = 0;
@@ -20,4 +19,6 @@ public:
 	Student(char name[20], char sex, char college[3], int year, int colNum);
 	void GenID();
 	void print();
+	int Total();
+	void setTotal(int total);
 };

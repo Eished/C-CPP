@@ -20,9 +20,15 @@ void display() {
 };
 
 int main() {
-	Student CSarr[M];
+	Student CSarr[M]; // 学生数组
 	Student MAarr[M];
 	Student BUarr[M];
+	int CScount = 0; // 学号顺序号：只增不减
+	int MAcount = 0;
+	int BUcount = 0;
+	int CSi = 0; // 学生数组下标位置
+	int MAi = 0;
+	int BUi = 0;
 	while (true) {
 		display();
 		int cho;
@@ -42,18 +48,20 @@ int main() {
 				int colNum;
 				cin >> name >> sex >> college >> year >> colNum;
 				Student stud(name, sex, college, year, colNum);
-				stud.GenID();
 				switch (colNum) {
 				case 11: {
-					CSarr[Student::csCount - 1] = stud;
+					stud.GenID(++CScount);
+					CSarr[CSi++] = stud;
 					break;
 				};
 				case 22: {
-					MAarr[Student::maCount - 1] = stud;
+					stud.GenID(++MAcount);
+					MAarr[MAi++] = stud;
 					break;
 				};
 				case 33: {
-					BUarr[Student::buCount - 1] = stud;
+					stud.GenID(++BUcount);
+					BUarr[BUi++] = stud;
 					break;
 				};
 				default:
@@ -70,7 +78,7 @@ int main() {
 					CSarr[i].print();
 				}
 				else {
-					//break;
+					//break; // 打印插入位置非法的学生
 				}
 			}
 			for (int i = 0; i < M; i++) {
@@ -98,6 +106,7 @@ int main() {
 			cout << "输入插入位置：" << endl;
 			int num;
 			cin >> num;
+			num = num - 1;
 			cout << "输入：名字 性别 学院字母 入学年份 学院代码" << endl;
 			char name[20];
 			char college[3];
@@ -106,31 +115,36 @@ int main() {
 			int colNum;
 			cin >> name >> sex >> college >> year >> colNum;
 			Student stud(name, sex, college, year, colNum);
-			stud.GenID();
 			Student studTmp;
 			switch (colNum) {
 			case 11: {
-				for (int i = num; i < M; i++) { // 插入位置超过当前输入队列长度，再次输入时会被覆盖
+				stud.GenID(++CScount);
+				for (int i = num; i < M; i++) { // 插入位置超过当前输入队列长度，再次输入时会被覆盖；M改成CSi可解决
 					studTmp = CSarr[i];
 					CSarr[i] = stud;
 					stud = studTmp;
 				}
+				CSi++; // 数组下标增加
 				break;
 			};
 			case 22: {
+				stud.GenID(++MAcount);
 				for (int i = num; i < M; i++) {
 					studTmp = MAarr[i];
 					MAarr[i] = stud;
 					stud = studTmp;
 				}
+				MAi++;
 				break;
 			};
 			case 33: {
+				stud.GenID(++BUcount);
 				for (int i = num; i < M; i++) {
 					studTmp = BUarr[i];
 					BUarr[i] = stud;
 					stud = studTmp;
 				}
+				BUi++;
 				break;
 			};
 			default:
@@ -178,16 +192,18 @@ int main() {
 		}
 		case 5: { // 统计学生信息
 			system("cls");
-			cout << "总人数：" << Student::total << endl;
-			cout << "计算机学院人数：" << Student::csCount << endl;
-			cout << "管理学院人数：" << Student::maCount << endl;
-			cout << "土木学院人数：" << Student::buCount << endl;
+			Student stud;
+			cout << "总人数：" << stud.Total() << endl;
+			cout << "计算机学院人数：" << CSi << endl;
+			cout << "管理学院人数：" << MAi << endl;
+			cout << "土木学院人数：" << BUi << endl;
 			system("pause");
 			system("cls");
 			break;
 		}
 		case 6: { // 删除学生信息
 			system("cls");
+			Student stud;
 			cout << "输入删除的学号：" << endl;
 			int num;
 			cin >> num;
@@ -199,6 +215,9 @@ int main() {
 						for (int j = i; j < M - 1; j++) {
 							CSarr[j] = CSarr[j + 1];
 						}
+						CSi--;
+						stud.setTotal(stud.Total() - 1);
+						cout << "删除成功" << endl;
 						break;
 					}
 				}
@@ -209,6 +228,9 @@ int main() {
 						for (int j = i; j < M - 1; j++) {
 							MAarr[j] = MAarr[j + 1];
 						}
+						MAi--;
+						stud.setTotal(stud.Total() - 1);
+						cout << "删除成功" << endl;
 						break;
 					}
 				}
@@ -219,12 +241,16 @@ int main() {
 						for (int j = i; j < M - 1; j++) {
 							BUarr[j] = BUarr[j + 1];
 						}
+						BUi--;
+						stud.setTotal(stud.Total() - 1);
+						cout << "删除成功" << endl;
 						break;
 					}
 				}
 			}
+			default:
+				break;
 			}
-			cout << "删除成功" << endl;
 			system("pause");
 			system("cls");
 			break;
@@ -240,7 +266,8 @@ int main() {
 				CSarr[i] = stud;
 				i++;
 			}
-			Student::csCount = i;
+			CScount = stud.studNum % 100;// 读最后一个对象的学号，作为起始值；乱序插入后有bug
+			CSi = i;// 初始化数组下标
 			i = 0;
 			// MA
 			ifstream fileMA("MA.dat", ios::in | ios::binary);
@@ -249,7 +276,8 @@ int main() {
 				MAarr[i] = stud;
 				i++;
 			}
-			Student::maCount = i;
+			MAcount = stud.studNum % 100;
+			MAi = i;
 			i = 0;
 			// BU
 			ifstream fileBU("BU.dat", ios::in | ios::binary);
@@ -258,8 +286,9 @@ int main() {
 				BUarr[i] = stud;
 				i++;
 			}
-			Student::buCount = i;
-			Student::total = Student::maCount + Student::csCount + Student::buCount;
+			BUcount = stud.studNum % 100;
+			BUi = i;
+			stud.setTotal(CScount + MAcount + BUcount);
 			cout << "读取成功！" << endl;
 			system("pause");
 			system("cls");

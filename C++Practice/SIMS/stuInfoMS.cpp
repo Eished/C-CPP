@@ -132,10 +132,11 @@ void input() {
 	}
 }
 void printAll() {
-	cout << "总人数：" << Student::total << endl;
-	cout << "计算机学院人数：" << Student::csCount << endl;
-	cout << "管理学院人数：" << Student::maCount << endl;
-	cout << "土木学院人数：" << Student::buCount << endl;
+	Student stud;
+	cout << "总人数：" << stud.Total() << endl;
+	cout << "计算机学院人数：" << CSarr.size() << endl;
+	cout << "管理学院人数：" << MAarr.size() << endl;
+	cout << "土木学院人数：" << BUarr.size() << endl;
 	cout << endl;
 	// 输入学院 或 打印全部
 	cout << "计算机学院:" << endl;
@@ -255,6 +256,7 @@ void Del() {
 		for (int i = 0; i < CSarr.size(); i++) {
 			if (CSarr[i].studNum == num)
 			{
+				CSarr[i].setTotal(CSarr[i].Total() - 1);
 				CSarr.erase(CSarr.begin() + i);
 				return;
 			}
@@ -266,6 +268,7 @@ void Del() {
 		for (int i = 0; i < MAarr.size(); i++) {
 			if (MAarr[i].studNum == num)
 			{
+				MAarr[i].setTotal(MAarr[i].Total() - 1);
 				MAarr.erase(MAarr.begin() + i);
 				return;
 			}
@@ -277,6 +280,7 @@ void Del() {
 		for (int i = 0; i < BUarr.size(); i++) {
 			if (BUarr[i].studNum == num)
 			{
+				BUarr[i].setTotal(BUarr[i].Total() - 1);
 				BUarr.erase(BUarr.begin() + i);
 				return;
 			}
@@ -379,7 +383,6 @@ void modify() {
 }
 
 void Sort() {
-	cout << "总人数：" << Student::total << endl;
 	cout << endl;
 	cout << "简单选择排序算法，从小到大排序:" << endl;
 	vector<Student> studs;
@@ -443,22 +446,22 @@ void Read() {
 		stud.print();
 		CSarr.push_back(stud);
 	}
+	Student::csCount = stud.studNum % 100; // 初始化学号起始位置；最后一个对象的学号，乱序插入后有bug
 	// MA
 	ifstream fileMA("MA.dat", ios::in | ios::binary);
 	while (fileMA.read((char*)&stud, sizeof(Student))) {
 		stud.print();
 		MAarr.push_back(stud);
 	}
+	Student::maCount = stud.studNum % 100;
 	// BU
 	ifstream fileBU("BU.dat", ios::in | ios::binary);
 	while (fileBU.read((char*)&stud, sizeof(Student))) {
 		stud.print();
 		BUarr.push_back(stud);
 	}
-	Student::csCount = CSarr.size();
-	Student::maCount = MAarr.size();
-	Student::buCount = BUarr.size();
-	Student::total = CSarr.size() + MAarr.size() + BUarr.size();
+	Student::buCount = stud.studNum % 100;
+	stud.setTotal(CSarr.size() + MAarr.size() + BUarr.size());
 	fileCS.close();
 	fileMA.close();
 	fileBU.close();
