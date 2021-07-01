@@ -1,5 +1,9 @@
 # C++ 实现学生信息管理系统
 
+> [此笔记线更新地址](https://github.com/Eished/C-CPP/blob/master/C%2B%2B%E5%AE%9E%E7%8E%B0%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.md)
+>
+> [C++ 笔记和代码库](https://github.com/Eished/C-CPP)
+
 ## 考试题目：
 
 ### A：学生信息存储（40分）
