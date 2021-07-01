@@ -397,12 +397,9 @@ void Sort() {
 	if (studs.size() > 0) {
 		for (int i = 0; i < studs.size(); i++) {
 			for (int j = i + 1; j < studs.size(); j++) {
-				if (studs[i].studNum > studs[j].studNum)
-				{
-					if (studs[i].studNum - studs[j].studNum > less) {
-						less = studs[i].studNum - studs[j].studNum;
-						temp = j;
-					}
+				if (studs[i].studNum - studs[j].studNum > less) {
+					less = studs[i].studNum - studs[j].studNum;
+					temp = j;
 				}
 			}
 			if (less) {
