@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <cstring>
 #include "Student.h"
 #include "myfunc.h"
 
