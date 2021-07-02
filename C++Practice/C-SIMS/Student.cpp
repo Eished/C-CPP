@@ -1,5 +1,6 @@
 #include "Student.h"
 #include <iostream>
+#include <cstring>
 using namespace std;
 
 int Student::total = 0;
