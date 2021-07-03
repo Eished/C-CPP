@@ -195,6 +195,35 @@ Shift+insert 输出鼠标选中的文本，相当于Ctl+v。
 
 以上两个命令在windows和UNIX中是通用的。
 
+## vim 粘贴时取消自动换行
+
+当vim开启smartindent时，对于代码会有自动换行的功效。但是，有时候我们需要在向vim中粘贴代码时，需要暂时关闭自动换行的功能。
+
+**解决方法：**
+
+:set paste
+
+之后进行插入操作，vim提示变为： – INSERT (paste) –
+
+这时就不再有自动换行。
+
+**恢复：**
+
+:set nopaste
+
+vim提示变为：– INSERT –
+
+
+
+## vim 支持c/c++ STL即标准库关键字高亮
+
+```shell
+git clone https://github.com/octol/vim-cpp-enhanced-highlight.git /tmp/vim-cpp-enhanced-highlight
+mkdir -p ~/.vim/after/syntax/
+mv /tmp/vim-cpp-enhanced-highlight/after/syntax/cpp.vim ~/.vim/after/syntax/cpp.vim
+rm -rf /tmp/vim-cpp-enhanced-highlight
+```
+
 
 
 # [C语言makefile文件](https://www.freecplus.net/b7a1c199959f4349b2a98874864a2000.html)
@@ -338,7 +367,7 @@ makefile中，变量就是一个名字，变量的值就是一个文本字符串
 
 我通过示例来介绍它的简单用法。
 
-```
+```shell
 CC=gcc
 FLAG=-g
  
@@ -356,7 +385,7 @@ clean:
 
 **第一行**
 
-```
+```shell
 CC=gcc
 ```
 
@@ -364,7 +393,7 @@ CC=gcc
 
 **第二行**
 
-```
+```shell
 FLAG=-g
 ```
 
@@ -372,13 +401,13 @@ FLAG=-g
 
 **第七行**
 
-```
+```shell
         $(CC)  $(FLAG) -o book1 book1.c
 ```
 
 `$(CC)和$(FLAG)`就是使用变量CC和FLAG的值，类似于C语言的宏定义，替换后的结果是：
 
-```
+```shell
         gcc -g -o book1 book1.c
 ```
 
@@ -386,17 +415,21 @@ FLAG=-g
 
 ![image.png](https://www.freecplus.net/runoobFiles/ueditor/image/20200318/1584536550181088438.png)
 
-在makefile文件中，使用变量的好处有两个：1）如果在很多编译指令采用了变量，只要修改变量的值，就相当于修改全部的编译指令；2）把比较长的、公共的编译指令采用变量来表示，可以让makefile更简洁。
+在makefile文件中，使用变量的好处有两个：
 
-## 四、应用经验
+​	1）如果在很多编译指令采用了变量，只要修改变量的值，就相当于修改全部的编译指令；
+
+​	2）把比较长的、公共的编译指令采用变量来表示，可以让makefile更简洁。
+
+四、应用经验
 
 makefile文件的编写可以很复杂，复杂到我不想看，在实际开发中，用不着那么复杂的makefile，我追求简单实用的方法，腾出更多的时间和精力去做更重要的事情，那些把makefile文件写得很复杂的程序员在我看来是吃饱了撑的。
 
-## 五、课后作业
+五、课后作业
 
 把您这段时间写的程序全部编写到makefile中，以后再也不要在命令提示符下用gcc了。
 
-## 六、版权声明 
+六、版权声明 
 
 C语言技术网原创文章，转载请说明文章的来源、作者和原文的链接。
 
@@ -603,7 +636,7 @@ int main(int argc,char *argv[])
   memset(&servaddr,0,sizeof(servaddr));
   servaddr.sin_family = AF_INET;
   servaddr.sin_port = htons(atoi(argv[2])); // 指定服务端的通信端口。
-  memcpy(&servaddr.sin_addr,h->h_addr,h->h_length);
+  memcpy(&servaddr.sin_addr,h->h_addr,h->h_length); // 不能直接赋值
   if (connect(sockfd, (struct sockaddr *)&servaddr,sizeof(servaddr)) != 0)  // 向服务端发起连接清求。
   { perror("connect"); close(sockfd); return -1; }
  
