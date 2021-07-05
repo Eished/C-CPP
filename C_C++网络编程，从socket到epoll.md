@@ -217,12 +217,131 @@ vim提示变为：– INSERT –
 
 ## vim 支持c/c++ STL即标准库关键字高亮
 
+**手动复制进去**
+
 ```shell
 git clone https://github.com/octol/vim-cpp-enhanced-highlight.git /tmp/vim-cpp-enhanced-highlight
 mkdir -p ~/.vim/after/syntax/
 mv /tmp/vim-cpp-enhanced-highlight/after/syntax/cpp.vim ~/.vim/after/syntax/cpp.vim
 rm -rf /tmp/vim-cpp-enhanced-highlight
 ```
+
+
+
+## [mac/linux中vim永久显示行号、开启语法高亮](https://segmentfault.com/a/1190000024433066)
+
+```
+cp /usr/share/vim/vimrc ~/.vimrc
+```
+
+ 先复制一份vim配置模板到个人目录下
+
+ 注：redhat 改成 cp /etc/vimrc ~/.vimrc
+
+**步骤2**：
+
+ 
+
+```
+vi ~/.vimrc
+```
+
+ 进入insert模式，在最后加二行
+
+```
+ syntax on
+
+ set nu!
+```
+
+保存收工。
+
+```
+set nocompatible                 "去掉有关vi一致性模式，避免以前版本的bug和局限    
+
+set nu!                                    "显示行号
+
+set guifont=Luxi/ Mono/ 9   " 设置字体，字体名称和字号
+
+filetype on                              "检测文件的类型     
+
+set history=1000                  "记录历史的行数
+
+set background=dark          "背景使用黑色
+
+syntax on                                "语法高亮度显示
+
+set autoindent                       "vim使用自动对齐，也就是把当前行的对齐格式应用到下一行(自动缩进）
+
+set cindent                             "（cindent是特别针对 C语言语法自动缩进）
+
+set smartindent                    "依据上面的对齐格式，智能的选择对齐方式，对于类似C语言编写上有用   
+
+set tabstop=4                        "设置tab键为4个空格，
+
+set shiftwidth =4                   "设置当行之间交错时使用4个空格     
+
+set ai!                                      " 设置自动缩进 
+
+set showmatch                     "设置匹配模式，类似当输入一个左括号时会匹配相应的右括号      
+
+set guioptions-=T                 "去除vim的GUI版本中得toolbar   
+
+set vb t_vb=                            "当vim进行编辑时，如果命令错误，会发出警报，该设置去掉警报       
+
+set ruler                                  "在编辑过程中，在右下角显示光标位置的状态行     
+
+set nohls                                "默认情况下，寻找匹配是高亮度显示，该设置关闭高亮显示     
+
+set incsearch                        "在程序中查询一单词，自动匹配单词的位置；如查询desk单词，当输到/d时，会自动找到第一个d开头的单词，当输入到/de时，会自动找到第一个以ds开头的单词，以此类推，进行查找；当找到要匹配的单词时，别忘记回车 
+
+set backspace=2           " 设置退格键可用
+```
+
+注：如果是mac，更好的办法是直接换掉默认的终端，改用zsh
+
+## vim显示行号、语法高亮、自动缩进的设置
+
+在UBUNTU中vim的配置文件存放在/etc/vim目录中，配置文件名为vimrc 
+
+在Fedora中vim的配置文件存放在/etc目录中，配置文件名为vimrc
+
+在Red Hat Linux 中vim的配置文件存放在/etc目录中，配置文件名为vimrc
+
+```javascript
+set nocompatible                 "去掉有关vi一致性模式，避免以前版本的bug和局限    
+set nu!                                    "显示行号
+set guifont=Luxi/ Mono/ 9   " 设置字体，字体名称和字号
+filetype on                              "检测文件的类型     
+set history=1000                  "记录历史的行数
+set background=dark          "背景使用黑色
+syntax on                                "语法高亮度显示
+set autoindent                       "vim使用自动对齐，也就是把当前行的对齐格式应用到下一行(自动缩进）
+set cindent                             "（cindent是特别针对 C语言语法自动缩进）
+set smartindent                    "依据上面的对齐格式，智能的选择对齐方式，对于类似C语言编写上有用   
+set tabstop=4                        "设置tab键为4个空格，
+set shiftwidth =4                   "设置当行之间交错时使用4个空格     
+set ai!                                      " 设置自动缩进 
+set showmatch                     "设置匹配模式，类似当输入一个左括号时会匹配相应的右括号      
+set guioptions-=T                 "去除vim的GUI版本中得toolbar   
+set vb t_vb=                            "当vim进行编辑时，如果命令错误，会发出警报，该设置去掉警报       
+set ruler                                  "在编辑过程中，在右下角显示光标位置的状态行     
+set nohls                                "默认情况下，寻找匹配是高亮度显示，该设置关闭高亮显示     
+set incsearch                        "在程序中查询一单词，自动匹配单词的位置；如查询desk单词，当输到/d时，会自动找到第一个d开头的单词，当输入到/de时，会自动找到第一个以ds开头的单词，以此类推，进行查找；当找到要匹配的单词时，别忘记回车 
+set backspace=2           " 设置退格键可用
+修改一个文件后，自动进行备份，备份的文件名为原文件名加“~”后缀
+      if has("vms")
+      set nobackup
+      else
+      set backup
+      endif
+```
+
+如果设置完成后，发现功能没有起作用，检查一下系统下是否安装了vim-enhanced包，查询命令为：
+
+​    $rpm -q vim-enhanced 注意：如果设置好以上设置后，VIM没有作出相应的动作，那么请你把你的VIM升级到最新版，一般只要在终端输入以下命令即可：sudo apt-get install vim
+
+转自：https://blog.csdn.net/chuanj1985/article/details/6873830
 
 
 
@@ -923,7 +1042,7 @@ accept在等待的过程中，如果被中断或其它的原因，函数返回-1
 
 其中**send/recv**可以进行多次交互。
 
-## 六、课后作业
+六、课后作业
 
 1）把client.cpp和server.cpp抄下来，编译运行，试试修改参数再运行。
 
@@ -937,10 +1056,165 @@ accept在等待的过程中，如果被中断或其它的原因，函数返回-1
 
 6）如果以上作业都能完成，建议再把本文章的内容再看一次，对文章开始部分的理论知识将有新的理解。
 
-## 七、版权声明
+七、版权声明
 
 C语言技术网原创文章，转载请说明文章的来源、作者和原文的链接。
 
 来源：C语言技术网（[www.freecplus.net](http://www.freecplus.net/)）
 
 作者：码农有道
+
+### 8、经验分享
+
+#### 可以打开多少个sock
+
+```shell
+// ulimit -a 1024 个
+ubuntu@ubuntu:~/Desktop$ ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 15399
+max locked memory       (kbytes, -l) 65536
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 1024
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 15399
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+
+// 修改为 2000 个
+ubuntu@ubuntu:~/Desktop$ ulimit -HSn 2000
+```
+
+#### 设置服务端 socket的 SO_REUSEADDR属性
+
+服努端程序的端口释放后可能会处于 TIME WAIT 状态，等待两分钟之后才能再被使用SO_REUSEADDR是让端口释放后立即就可以被再次使用。
+
+```c
+// 设置 SO_REUSEADDR选项
+int opt=1; 
+unsigned int len=sizeof(opt); 
+setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &opt, len)
+```
+
+#### 查看系统进程连接情况
+
+`netstat -na`
+
+## 六、主机字节序与网络字节序
+
+- **字节顺序**：
+
+  - 是指占内存多于一个字节类型的数据在内存中的存放顺序，一个32位整数由4个字节组成。內存中存储这4个字节有两种方法：一种是将低序字节存储在起始地址，这称为小端（little-endian）字节序；另一种方法是将高序字节存储在起始地址，这称为大端（big-endian）字节序。
+
+  ![image-20210705144109361](C_C++网络编程，从socket到epoll.assets/image-20210705144109361.png)
+
+  - 这两种字节序之间没有标准可循，两种格式都有系统使用。比如，Inter x86、ARM核采用的是小端模式，Power pc、MIPS UNIX和HP-PA UNIX釆用大端模式。
+    大于一个字节类型的数据在内存中的存放有顺序，一个字节的数据没有顺序的问题
+
+- **网络字节序**：网络字节序是TCP/P中规定好的一种数据表示格式，它与具体的CPU类型、操作系统等无关，从而可以保证数据在不同主机之间传输时能够被正确解释。网络字节序采用 big endian排序方式
+- **主机字节序**：不同的机器主机字节序不相同，与CPU设计有关，数据的顺序是由cpu决定的，而与操作系统无关。
+- 由于这个原因不同体系结构的机器之间无法通信，所以要转换成一种约定的字节序，也就是网络字节序。即使是同一台机器上的两个进程（比如一个由C语言，另一个由Java编写）通信，也要考虑字节序的问题（VM采用大端字节序）。
+- 网络字节序与主机字节序之间的转换函数：
+  - `hons()，、ntohs()、htonl()、ntohl()`
+  - htons和 ntohs完成16位无符号数的相互转换，
+  - htonl和ntohl完成32位无符号数的相互转换。host to network short long
+
+## 七、结构体
+
+### socket
+
+```c
+struct sockaddr{
+  unsigned short sa_family;
+  char sa_data[14];
+}
+
+struct sockaddr_in{
+  short int sin_family;
+  unsigned short int sin_port;
+  struct in addr sin_addr;
+  unsigned char sin_zero[8];
+
+}
+struct in addr{
+	unsigned long s_addr;
+}
+```
+
+### bind
+
+强制转换为老的 sockaddr
+
+```c
+int bind (int sockfd, const struct sockaddr *addr, socklen_t addr len)
+```
+
+### gethostbyname
+
+```c
+struct hostent {
+  char* h_name; //主机名
+	char*h_aliases; //主机所有别名构成的字符串数组，同一P可绑定多个域名int h 		int h_addrtype; //主机P地址的类型，例如PV4（AF INET）还是PV6
+	int h_length; //主机IP地址长度，IPV4地址为4，IPV6地址则为16
+ 	char*h addr_list; //主机的jp地址，以网络字节序存储。
+}
+#define h_addr h_addr_list[0]/*for backward compatibility*/
+
+// gethostbyname函数可以利用字符串格式的域名获得IP网络字节顺序地址。
+struct hostent*gethostbyname(const char*name)
+```
+
+1. 将一个字符串IP地址转换为一个32位的网络字节序IP地址。如果这个函数成功，函数的返回值非零，如果输入地址不正确则会返回零。使用这个函数并没有错误码存放在errno中，所以它的值会被忽略
+2. 把网络字节序IP地址转换成字符串的IP地址。
+
+```c
+int inet_aton（const char*cp，struct in_addr*inp）;
+  
+char*inet_ntoa（struct in_addr in）；
+  
+in_addr_t inet_addr（const char*cp）；// 和第一个相同
+```
+
+### listen、connect、accept
+
+返回新的socket，生成队列。
+
+accept从队列中获取一个
+
+1）服务端在调用 llisten0之前，客户端不能向服务端发起连接请求的
+
+2）服务端调用 listen0函数后，服务端的 socke开始监听客户端的连接
+
+3）客户端调用 connect0函数向服务端发起连接请求
+
+4）在cP底层，客户端和服务端握手后建立起通信通道，如果有多个客户端请求，在服务端就会形成一个已准备好的连接的队列
+
+5）服务端调用 accept0函数从队列中获取一个已准备好的连接，函数返回一个新的socket，新的 socket用于与客户端通信，listen的 socket只负责监听客户端的连接请求。
+
+### listen的 socket队列
+
+- 内核会为ten状态的 socket维护两个队列：不完全连接请求队列（SYN RECV状态）
+  和等待acep建立 socke的队列（ESTABLISHED状态）
+- 在linux内核22之后，backlog参数的形为改变了，现在它指等待 accept的完全建立的socket的队列长度，而不是不完全连接请求的数量。不完全连接队列的长度可以使用
+  /proc/sys/net/ipv4/tcp_max_syn_backlog设置（缺省值128）
+- backlog参数如果比/proc/sys/net/ipv4/tcp max syn backlog，则截断
+
+
+
+## 八、TCP报文分包和粘包
+
+分包：发送方发送字符串”helloworld"，接收方却接收到了两个字符串”hello和"world粘包：发送方发送两个字符串”hello”+"world"，接收方却一次性接收到了"helloworld"
+但是TcP传输数据能保证几点：
+1）顺序不变，例如发送方发送hell，接收方也一定顺序接收到helo，这个是TCP协议承诺的，因此这点成为我们解决分包和粘包问题的关键
+
+2）分割的包中间不会插入其他数据。
+在实际开发中，为了解决分包和粘包的问题，就一定要自定义一份协议，最常用的方一法是
+报文长度+报文内容`0010helloworld`  报文长度asci码，二进制的数字
+
