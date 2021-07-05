@@ -240,8 +240,6 @@ cp /usr/share/vim/vimrc ~/.vimrc
 
 **步骤2**：
 
- 
-
 ```
 vi ~/.vimrc
 ```
@@ -1217,4 +1215,744 @@ accept从队列中获取一个
 2）分割的包中间不会插入其他数据。
 在实际开发中，为了解决分包和粘包的问题，就一定要自定义一份协议，最常用的方一法是
 报文长度+报文内容`0010helloworld`  报文长度asci码，二进制的数字
+
+
+
+## 九、socket 封装
+
+用于解决分包和粘包，封装成类。
+
+
+
+## 十、多进程的 socket服务端
+
+基础：
+
+1. 信号；
+2. 多进程；
+
+### 一、搭建
+
+### 二、僵尸进程
+
+### 三、增加业务逻辑
+
+1. xml登录和身份验证
+
+### 四、TCP长连接与短连接
+
+1. client与 server建立连接进行通信，通信完成后释放连接，建立连接时需要3次握手，释放连接需要4次挥手，连接的建立和释放都需要时间，server还有创建新进程或线程的开销。
+   1. 短连接：client/server间只进行一次或连续多次通信，通信完成后马上断开了。管理起来比较简单，不需要额外的控制手段。
+   2. 长连接：client/server间需要多次通信，通信的频率和次数不确定，所以client和 server需要保持这个连接。
+      根据不同的应用场景采用不同的策略，没有十全十美的选择，只有合适的选择
+
+## 十一、网络服务端性能测试
+
+1. 在实际项目开发中，除了完成程序的功能，还需要测试性能。
+
+   1. 在充分了解服务端的性能后，才能决定如何选择服务端的架构，还有网络带宽、硬件配置等。
+   2. 服务端的性能指标是面试中必问的。
+   3. 如果不了解系统的性能指标，面试官会认为您没有实际项目开发经验或对网络编程是一知半解。主要的性能指标如下：
+      1. 1）服务端的并发能力；
+      2. 2）服务端的业务处理能力
+      3. 3）客户端业务响应时效；
+      4. 4）网络带宽。
+
+   重要的业务系统，最好是与系统管理员和网络管理员一起测试。
+
+### 一、并发性能测试
+
+### 二、业务性能测试
+
+### 三、多进程与多线程性能差异
+
+### 四、响应时间
+
+### 五、带宽
+
+## 十二、I/O 复用
+
+1. 多进程/线程并发模型，为每个 socket分配一个进程/线程。
+2. I/O（多路）复用，采用单个进/线程就可以管理多个 socket
+   1. 网络设备（交换机、路由器）；
+   2. 大型游戏的后台
+   3. nginx、redis 
+3. l/O复用有三种方案：select、poll、epoll，各有优缺点，select并不是一定就不行，epoll 也不是什么都好，各有应用场景，必须全部掌握。
+
+### 一、select
+
+![image-20210705224417795](C_C++网络编程，从socket到epoll.assets/image-20210705224417795.png)
+
+![image-20210705235241828](C_C++网络编程，从socket到epoll.assets/image-20210705235241828.png)
+
+- select的水平触发
+  - selec采用“水平触发"的方式，如果报告了fd后事件没有被处理或数据没有被全部读取，那么下次 select时会再次报告该fd。
+- select的缺点
+  1. 1）select支持的文件描述符数量太小了，默认是1024，虽然可以调整，但是，描述符数量越大，效率将更低，调整的意义不大。
+  2. 2）每次调用 select，都需要把 fdset从用户态拷贝到内核。
+  3. 3）同时在线的大量客户端有事件发生的可能很少，但还是需要遍历 feet，因此随着监视的描述符数量的增长，其效率也会线性下降。
+- select的其它用途
+  - 在unⅸ（Linux）世界里，一切皆文件，文件就是一串二进制流，不管 socket、管道、終端、设备等都是文件，一切都是流。在信息交换的过程中，都是对这些流进行数据的收发操作，简称为Ⅳ◎操作input and output），往流中读出数据，系统调用read，写入数据，系统调用write
+  - select是io复用函数，除了用于网络通信，还可以用于文件、管道、终端、设备等操作，但开发场景比较少。
+    了解 pselect函数。
+
+### 二、poll 
+
+1. poll 模型
+
+   - poll 和 select在本质上没有差别，管理多个描述符也是进行轮询，根据描述符的状态进行处理，但是poll没有最大文件描述符数量的限制。
+   - select 用 fdset 采用 bitmap，poll 用了**数组**。
+   - poll和 select同样存在一个缺点就是，文件描述符的数组被整体复制于用户态和内核态的地址空间之间，而不论这些文件描述符是否有事件，它的开销随着文件描述符数量的增加而线性增大。
+   - 还有 poll 返回后，也需要历遍整个描述符的数组才能得到有事件的描述符。
+
+2. poll 函数和参数
+
+   ```c
+   #include <poll.h>
+   int poll(struct pollfd *fdarray,unsigned long nfds,int timeout);
+   
+   struct pollfd{
+    int fd;                  //需要检测的文件描述符
+    short events;            //请求的事件 
+    short revents;           //返回的事件
+   };
+   ```
+
+   1. 返回：若有就绪描述符则为其数目，若超时返回0，出错返回-1
+
+      第一个参数是指向一个结构体数组第一个元素的指针。每个元素都是一个pollfd结构，用于指定测试某个给定描述符fd的条件
+
+3. 下表说明了能够作为events和revents的常量
+
+   ![img](https://pic4.zhimg.com/80/v2-ffc0e68af82b0873a6794a4296e602eb_720w.jpg)
+
+   结构体数组中元素的个数是由nfds参数指定。
+
+   timeout 参数指定poll函数返回前等待多长时间。它是一个指定应等待毫秒数的正值。取值如下表：
+
+   timeout值说明-1永远等待，直到有描述符就绪0立即返回，不阻塞进程>0等待指定的毫秒数
+
+   使用poll函数建立的服务器端如下：
+
+   ```c
+   //
+   // Created by silver on 2020/8/23.
+   //
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <arpa/inet.h>
+   #include <netinet/in.h>
+   #include <sys/unistd.h>
+   #include <sys/socket.h>
+   #include <sys/types.h>
+   #include <errno.h>
+   #include <string.h>
+   #include <sys/wait.h>
+   #include <sys/select.h>
+   #include <poll.h>
+   #include <sys/stropts.h>
+   #define MAXLINE 4096
+   #define PORT 9873
+   #define LISTQUE 1024
+   #define OPEN_MAX 256
+   int main(int argc,char* argv[])
+   {
+       int listenfd,confd,sockfd;
+       struct pollfd client[OPEN_MAX];
+       int nready;
+       int maxcount = -1;
+       int count = 0;
+       char buf[MAXLINE];
+       struct sockaddr_in SerAddr,Cliaddr;
+       socklen_t Clilen = sizeof(Cliaddr);
+       //initializer
+       bzero(&SerAddr,sizeof(SerAddr));
+       bzero(&Cliaddr,Clilen);
+       bzero(buf,MAXLINE);
+       listenfd = socket(AF_INET,SOCK_STREAM,IPPROTO_IP);
+       SerAddr.sin_family = AF_INET;
+       SerAddr.sin_port = htons(PORT);
+       SerAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+   
+       if (bind(listenfd,(struct sockaddr*)&SerAddr,sizeof(SerAddr)) < 0)
+       {
+           perror("Bind error");
+       }
+       if (listen(listenfd,LISTQUE) < 0)
+       {
+           perror("listen error");
+       }
+       client[0].fd = listenfd;
+       client[0].events = POLLRDNORM;
+       for (count = 1; count < OPEN_MAX; count++) {
+           client[count].fd = -1;
+       }
+       maxcount = 0;
+       ssize_t  n;
+       fputs("server waiting....",stdout);
+       fflush(stdout);
+       while(true)
+       {
+           nready = poll(client,maxcount +1,-1);
+   
+           if (client[0].revents & POLLRDNORM) // new client connection
+           {
+               confd = accept(listenfd,(struct sockaddr*)&Cliaddr,&Clilen);
+               printf("client address: %s\n",inet_ntoa(Cliaddr.sin_addr));
+               if (confd < 0){ perror("accept error");}
+   
+               for (count = 1;  count<OPEN_MAX ; count++)
+               {
+                   if (client[count].fd < 0)
+                   {
+                       client[count].fd = confd;
+                       break;
+                   }
+               }
+               if (count == OPEN_MAX) {printf("too many clients");exit(-1);}
+   
+               client[count].events = POLLRDNORM;
+               if (count > maxcount) maxcount = count;
+               if (--nready <= 0) continue; //no more readable descriptions
+           }
+           for (count = 1; count <=maxcount ; count++)
+           {
+               if ((sockfd = client[maxcount].fd) < 0){ continue;}
+               if(client[count].revents & (POLLRDNORM | POLLERR))
+               {
+                   n = read(sockfd,buf,MAXLINE);
+                   if (n < 0) {
+                       if (errno == ECONNRESET) {
+                           close(sockfd);
+                           client[count].fd = -1;
+                       } else {
+                           printf("read error");
+                           exit(-1);
+                       }
+                   } else if (n == 0){
+                       close(sockfd);
+                       client[count].fd = -1;
+                   } else{
+                       writen(sockfd,buf,n);
+                   }
+               }
+               if (--nready <= 0) break; //no more readable descriptions
+           }
+       }
+       close(listenfd);
+       return 0;
+   }
+   ```
+
+   
+
+   编辑于 2020-09-12
+
+### 三、epoll
+
+epoll 解决了select和poll 所有的问题（fdset拷贝和轮询），采用了最合理的设计和实现方案。
+
+epoll在现在的软件中占据了很大的分量，nginx，libuv等单线程事件循环的软件都使用了epoll。之前分析过select，今天分析一下epoll。
+
+们按照epoll三部曲的顺序进行分析。
+
+#### **epoll_create**
+
+```cpp
+asmlinkage long sys_epoll_create(int size)
+{
+    int error, fd;
+    struct inode *inode;
+    struct file *file;
+
+    error = ep_getfd(&fd, &inode, &file);
+    error = ep_file_init(file);
+
+    return fd;
+
+}
+```
+
+我们发现create函数似乎很简单。
+1 操作系统中，进程和文件系统是通过fd=>file=>node联系起来的。ep_getfd就是在建立这个联系。
+
+```cpp
+static int ep_getfd(int *efd, struct inode **einode, struct file **efile)
+{
+
+    // 获取一个file结构体
+    file = get_empty_filp();
+    // epoll在底层本身对应一个文件系统，从这个文件系统中获取一个inode
+    inode = ep_eventpoll_inode();
+    // 获取一个文件描述符
+    fd = get_unused_fd();
+
+    sprintf(name, "[%lu]", inode->i_ino);
+    this.name = name;
+    this.len = strlen(name);
+    this.hash = inode->i_ino;
+    // 申请一个entry
+    dentry = d_alloc(eventpoll_mnt->mnt_sb->s_root, &this);
+    dentry->d_op = &eventpollfs_dentry_operations;
+    file->f_dentry = dentry;
+
+    // 建立file和inode的联系
+    d_add(dentry, inode);
+    // 建立fd=>file的关联
+    fd_install(fd, file);
+
+    *efd = fd;
+    *einode = inode;
+    *efile = file;
+    return 0;
+}
+```
+
+形成一个这种的结构。
+
+
+
+2 通过ep_file_init建立file和epoll的关联。
+
+
+
+```cpp
+static int ep_file_init(struct file *file)
+{
+    struct eventpoll *ep;
+
+    ep = kmalloc(sizeof(struct eventpoll), GFP_KERNEL)
+    memset(ep, 0, sizeof(*ep));
+    // 一系列初始化
+    file->private_data = ep;
+
+    return 0;
+}
+```
+
+
+
+epoll_create函数主要是建立一个数据结构。并返回一个文件描述符供后面使用。
+
+
+
+#### **epoll_ctl**
+
+```cpp
+asmlinkage long
+sys_epoll_ctl(int epfd, int op, int fd, struct epoll_event __user *event)
+{
+    int error;
+    struct file *file, *tfile;
+    struct eventpoll *ep;
+    struct epitem *epi;
+    struct epoll_event epds;
+
+    error = -EFAULT;
+    // 不是删除操作则复制用户数据到内核
+    if (
+        EP_OP_HASH_EVENT(op) &&
+        copy_from_user(&epds, event, sizeof(struct epoll_event))
+      )
+        goto eexit_1;
+
+    // 根据一种的图，拿到epoll对应的file结构体
+    file = fget(epfd);
+
+    // 拿到操作的文件的file结构体
+    tfile = fget(fd);
+    // 通过file拿到epoll_event结构体，见上面的图
+    ep = file->private_data;
+    // 看这个文件描述符是否已经存在，epoll用红黑树维护这个数据
+    epi = ep_find(ep, tfile, fd);
+
+    switch (op) {
+    // 新增
+    case EPOLL_CTL_ADD:
+        // 还没有则新增，有则报错
+        if (!epi) {
+            epds.events |= POLLERR | POLLHUP;
+            // 插入红黑树
+            error = ep_insert(ep, &epds, tfile, fd);
+        } else
+            error = -EEXIST;
+        break;
+    // 删除
+    case EPOLL_CTL_DEL:
+        // 存在则删除，否则报错
+        if (epi)
+            error = ep_remove(ep, epi);
+        else
+            error = -ENOENT;
+        break;
+    // 修改
+    case EPOLL_CTL_MOD:
+        // 存在则修改，否则报错
+        if (epi) {
+            epds.events |= POLLERR | POLLHUP;
+            error = ep_modify(ep, epi, &epds);
+        } else
+            error = -ENOENT;
+        break;
+    }
+}
+```
+
+epoll_ctl函数看起来也没有很复杂，就是根据用户传进来的信息去操作红黑树。对于红黑树的增删改查，查和删除就不分析了。就是去操作红黑树。增和改是类似的逻辑，所以我们只分析增操作就可以了。在此之前，我们先了解一些epoll中其他的数据结构。
+
+
+
+当我们新增一个需要监听的文件描述符的时候，系统会申请一个epitem去表示。epitem是保存了文件描述符、事件等信息的结构体。然后把epitem插入到eventpoll结构体维护的红黑树中。
+
+
+
+```cpp
+static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
+             struct file *tfile, int fd)
+{
+    int error, revents, pwake = 0;
+    unsigned long flags;
+    struct epitem *epi;
+    struct ep_pqueue epq;
+
+    // 申请一个epitem
+    epi = EPI_MEM_ALLOC()
+    // 省略一系列初始化工作
+    // 记录所属的epoll
+    epi->ep = ep;
+    // 在epitem中保存文件描述符fd和file
+    EP_SET_FFD(&epi->ffd, tfile, fd);
+    // 监听的事件
+    epi->event = *event;
+    epi->nwait = 0;
+
+    epq.epi = epi;
+    init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
+    revents = tfile->f_op->poll(tfile, &epq.pt);
+
+    // 把epitem插入红黑树
+    ep_rbtree_insert(ep, epi);
+
+    // 如果监听的事件在新增的时候就已经触发，则直接插入到epoll就绪队列
+    if ((revents & event->events) && !EP_IS_LINKED(&epi->rdllink)) {
+        // 把epitem插入就绪队列rdllist
+        list_add_tail(&epi->rdllink, &ep->rdllist);
+        //  有事件触发，唤醒阻塞在epoll_wait的进程队列
+        if (waitqueue_active(&ep->wq))
+            wake_up(&ep->wq);
+        if (waitqueue_active(&ep->poll_wait))
+            pwake++;
+    }
+}
+```
+
+新增操作的大致流程是
+1 申请了一个新的epitem表示待观察的实体。他保存了文件描述符、感兴趣的事件等信息。
+2 插入红黑树
+3 判断新增的节点中对应的文件描述符和事件是否已经触发了，是则加入到就绪队列（由eventpoll->rdllist维护的一个队列）
+下面具体看一下如何判断感兴趣的事件在对应的文件描述符中是否已经触发。相关代码在ep_insert中。下面单独拎出来。
+
+```cpp
+/*
+    struct ep_pqueue {
+        // 函数指针
+        poll_table pt;
+        // epitem
+        struct epitem *epi;
+    };
+*/
+struct ep_pqueue epq;
+epq.epi = epi;
+init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
+revents = tfile->f_op->poll(tfile, &epq.pt);
+
+static inline void init_poll_funcptr(poll_table *pt, poll_queue_proc qproc)
+{
+    pt->qproc = qproc;
+}
+```
+
+上面的代码是定义了一个struct ep_pqueue 结构体，然后设置他的一个字段为ep_ptable_queue_proc。然后执行tfile->f_op->poll。poll函数由各个文件系统或者网络协议实现。我们以管道为例。
+
+```cpp
+static unsigned int
+pipe_poll(struct file *filp, poll_table *wait)
+{
+    unsigned int mask;
+    // 监听的文件描述符对应的inode
+    struct inode *inode = filp->f_dentry->d_inode;
+    struct pipe_inode_info *info = inode->i_pipe;
+    int nrbufs;
+    /*
+    static inline void poll_wait(struct file * filp, wait_queue_head_t * wait_address, poll_table *p)
+    {
+        if (p && wait_address)
+            p->qproc(filp, wait_address, p);
+    }
+    */
+    poll_wait(filp, PIPE_WAIT(*inode), wait);
+
+    // 判断哪些事件触发了
+    nrbufs = info->nrbufs;
+    mask = 0;
+    if (filp->f_mode & FMODE_READ) {
+        mask = (nrbufs > 0) ? POLLIN | POLLRDNORM : 0;
+        if (!PIPE_WRITERS(*inode) && filp->f_version != PIPE_WCOUNTER(*inode))
+            mask |= POLLHUP;
+    }
+
+    if (filp->f_mode & FMODE_WRITE) {
+        mask |= (nrbufs < PIPE_BUFFERS) ? POLLOUT | POLLWRNORM : 0;
+        if (!PIPE_READERS(*inode))
+            mask |= POLLERR;
+    }
+
+    return mask;
+}
+```
+
+我们看到具体的poll函数里会首先执行poll_wait函数。这个函数只是简单执行struct ep_pqueue epq结构体中的函数，即刚才设置的ep_ptable_queue_proc。
+
+```cpp
+//  监听的文件描述符对应的file结构体，whead是等待监听的文件描述符对应的inode可用的队列
+static void ep_ptable_queue_proc(struct file *file, wait_queue_head_t *whead,
+                 poll_table *pt)
+{
+    struct epitem *epi = EP_ITEM_FROM_EPQUEUE(pt);
+    struct eppoll_entry *pwq;
+
+    if (epi->nwait >= 0 && (pwq = PWQ_MEM_ALLOC())) {
+        pwq->wait->flags = 0;
+        pwq->wait->task = NULL;
+        // 设置回调
+        pwq->wait->func = ep_poll_callback;
+        pwq->whead = whead;
+        pwq->base = epi;
+        // 插入等待监听的文件描述符的inode可用的队列，回调函数是ep_poll_callback
+        add_wait_queue(whead, &pwq->wait);
+        list_add_tail(&pwq->llink, &epi->pwqlist);
+        epi->nwait++;
+    } else {
+        /* We have to signal that an error occurred */
+        epi->nwait = -1;
+    }
+}
+```
+
+主要的逻辑是把当前进程插入监听的文件的等待队列中，等待唤醒。
+
+#### **epoll_wait**
+
+```cpp
+asmlinkage long sys_epoll_wait(int epfd, struct epoll_event __user *events,
+                   int maxevents, int timeout)
+{
+    int error;
+    struct file *file;
+    struct eventpoll *ep;
+    // 通过epoll的fd拿到对应的file结构体
+    file = fget(epfd);
+    // 通过file结构体拿到eventpoll结构体
+    ep = file->private_data;
+    error = ep_poll(ep, events, maxevents, timeout);
+    return error;
+}
+
+static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
+           int maxevents, long timeout)
+{
+    int res, eavail;
+    unsigned long flags;
+    long jtimeout;
+    wait_queue_t wait;
+
+    // 计算超时时间
+    jtimeout = timeout == -1 || timeout > (MAX_SCHEDULE_TIMEOUT - 1000) / HZ ?
+        MAX_SCHEDULE_TIMEOUT: (timeout * HZ + 999) / 1000;
+
+retry:
+
+    res = 0;
+    // 就绪队列为空
+    if (list_empty(&ep->rdllist)) {
+        // 加入阻塞队列
+        init_waitqueue_entry(&wait, current);
+        add_wait_queue(&ep->wq, &wait);
+
+        for (;;) {
+            // 挂起
+            set_current_state(TASK_INTERRUPTIBLE);
+            // 超时或者有就绪事件了，则跳出返回
+            if (!list_empty(&ep->rdllist) || !jtimeout)
+                break;
+            // 被信号唤醒返回EINTR
+            if (signal_pending(current)) {
+                res = -EINTR;
+                break;
+            }
+
+            // 设置定时器，然后进程挂起，等待超时唤醒（超时或者信号唤醒）
+            jtimeout = schedule_timeout(jtimeout);
+        }
+        // 移出阻塞队列
+        remove_wait_queue(&ep->wq, &wait);
+        // 设置就绪
+        set_current_state(TASK_RUNNING);
+    }
+
+    // 是否有事件就绪，唤醒的原因有几个，被唤醒不代表就有就绪事件
+    eavail = !list_empty(&ep->rdllist);
+
+    write_unlock_irqrestore(&ep->lock, flags);
+    // 处理就绪事件返回
+    if (!res && eavail &&
+        !(res = ep_events_transfer(ep, events, maxevents)) && jtimeout)
+        goto retry;
+
+    return res;
+}
+```
+
+总的来说epoll_wait的逻辑主要是处理就绪队列的节点。
+1 如果就绪队列为空，则根据timeout做下一步处理，可能定时阻塞。
+2 如果就绪队列非空则处理就绪队列，返回给用户。处理就绪队列的函数是ep_events_transfer。
+
+```cpp
+static int ep_events_transfer(struct eventpoll *ep,
+                  struct epoll_event __user *events, int maxevents)
+{
+    int eventcnt = 0;
+    struct list_head txlist;
+
+    INIT_LIST_HEAD(&txlist);
+
+    if (ep_collect_ready_items(ep, &txlist, maxevents) > 0) {
+        eventcnt = ep_send_events(ep, &txlist, events);
+        ep_reinject_items(ep, &txlist);
+    }
+
+    return eventcnt;
+}
+```
+
+主要是三个函数，我们一个个看。
+1 ep_collect_ready_items收集就绪事件
+
+```cpp
+static int ep_collect_ready_items(struct eventpoll *ep, struct list_head *txlist, int maxevents)
+{
+    int nepi;
+    unsigned long flags;
+    // 就绪事件的队列
+    struct list_head *lsthead = &ep->rdllist, *lnk;
+    struct epitem *epi;
+
+    for (nepi = 0, lnk = lsthead->next; lnk != lsthead && nepi < maxevents;) {
+        // 通过结构体字段的地址拿到结构体首地址
+        epi = list_entry(lnk, struct epitem, rdllink);
+
+        lnk = lnk->next;
+
+        /* If this file is already in the ready list we exit soon */
+        if (!EP_IS_LINKED(&epi->txlink)) {
+
+            epi->revents = epi->event.events;
+            // 插入txlist队列，然后处理完再返回给用户
+            list_add(&epi->txlink, txlist);
+            nepi++;
+            // 从就绪队列中删除
+            EP_LIST_DEL(&epi->rdllink);
+        }
+    }
+
+    return nepi;
+}
+```
+
+2 ep_send_events判断哪些事件触发了
+
+```cpp
+static int ep_send_events(struct eventpoll *ep, struct list_head *txlist,
+              struct epoll_event __user *events)
+{
+    int eventcnt = 0;
+    unsigned int revents;
+    struct list_head *lnk;
+    struct epitem *epi;
+    // 遍历就绪队列，记录触发的事件
+    list_for_each(lnk, txlist) {
+        epi = list_entry(lnk, struct epitem, txlink);
+        // 判断哪些事件触发了
+        revents = epi->ffd.file->f_op->poll(epi->ffd.file, NULL);
+
+        epi->revents = revents & epi->event.events;
+        // 复制到用户空间
+        if (epi->revents) {
+            if (__put_user(epi->revents,
+                       &events[eventcnt].events) ||
+                __put_user(epi->event.data,
+                       &events[eventcnt].data))
+                return -EFAULT;
+            // 只监听一次，触发完设置成对任何事件都不感兴趣
+            if (epi->event.events & EPOLLONESHOT)
+                epi->event.events &= EP_PRIVATE_BITS;
+            eventcnt++;
+        }
+    }
+    return eventcnt;
+}
+```
+
+3 ep_reinject_items重新插入就绪队列
+
+```cpp
+static void ep_reinject_items(struct eventpoll *ep, struct list_head *txlist)
+{
+    int ricnt = 0, pwake = 0;
+    unsigned long flags;
+    struct epitem *epi;
+
+    while (!list_empty(txlist)) {
+        epi = list_entry(txlist->next, struct epitem, txlink);
+        EP_LIST_DEL(&epi->txlink);
+        //  水平触发模式则一直通知，即重新加入就绪队列
+        if (EP_RB_LINKED(&epi->rbn) && !(epi->event.events & EPOLLET) &&
+            (epi->revents & epi->event.events) && !EP_IS_LINKED(&epi->rdllink)) {
+            list_add_tail(&epi->rdllink, &ep->rdllist);
+            ricnt++;
+        }
+    }
+
+}
+```
+
+我们发现，并有没有在epoll_wait的时候去收集就绪事件，那么就绪队列是谁处理的呢？我们回顾一下插入红黑树的时候，做了一个事情，就是在文件对应的inode上注册一个回调。当文件满足条件的时候，就会唤醒因为epoll_wait而阻塞的进程。epoll_wait会收集事件返回给用户。
+
+```cpp
+static int ep_poll_callback(wait_queue_t *wait, unsigned mode, int sync, void *key)
+{
+    int pwake = 0;
+    unsigned long flags;
+    struct epitem *epi = EP_ITEM_FROM_WAIT(wait);
+    struct eventpoll *ep = epi->ep;
+    // 插入就绪队列
+    list_add_tail(&epi->rdllink, &ep->rdllist);
+    // 唤醒因epoll_wait而阻塞的进程
+    if (waitqueue_active(&ep->wq))
+        wake_up(&ep->wq);
+    if (waitqueue_active(&ep->poll_wait))
+        pwake++;
+    return 1;
+}
+```
+
+
+
+epoll的实现涉及的内容比较多，先分析一下大致的原理。有机会再深入分析。
+
+
+
+发布于 2020-03-28
+
+### 四、IO 复用中写的问题
 
