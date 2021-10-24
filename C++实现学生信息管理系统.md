@@ -14,16 +14,13 @@
 
    - 其中学号是整数；性别用单个大写字母表示，F 表示女性，M 表示男性；姓名是字符串类型。
 
-   - 学生学号固定长度6位，前两位表示学院，例如计算机学院编码 11，则首两位编码是 11；
-
-     中间两位表示入学年份，例如学生是 2019 年入学，则中间编码为 19：最后两位是自动按序编号，例如学生是 2019 年入学计算机学院的第56号学生，则学号为 111956。
+   - 学生学号固定长度6位，前两位表示学院，例如计算机学院编码 11，则首两位编码是 11；中间两位表示入学年份，例如学生是 2019 年入学，则中间编码为 19：最后两位是自动按序编号，例如学生是 2019 年入学计算机学院的第56号学生，则学号为 111956。
 
    - 假设学校有三个学院：
 
      - 计算机学院编码 11， 
      - 管理学院编码 22，
      - 土木学院编码 33。
-
 2. **程序开发要求：**
 
    1. 要求使用 C++ 语言与面对对象设计思想实现开发。
@@ -32,13 +29,34 @@
    4. 定义学号生成函数 `GenID`，根据学生所属的学院、入学年份、学院顺序号，生成学生的学号。
    5. 学生类中，可以根据需要增加成员函数，但不能增加数据成员。
    6. 在主函数中，创建三个对象数组，对应三个学院，分别存储三个学院的学生对象。
-
 3. **输入：**
-
    1. 第一行输入t，表示有t个学生。
    2. 接着输入t行，每行输入一个学生信息共五个参数，包括姓名、性别、学院、入学年份和学院顺序号，数据之间用空格隔开。其中学院用缩写表示，CS 表示计算机学院，MA 表示管理学院，BU 表示土木学院。
    3. 每输入一个学生信息，就调用函数 `GenID` 生成学生学号，并创建一个新的学生对象。然后根据学院缩写，把新学生插入到对应对象数组的末尾。
    4. 数据输入的具体格式参考输入样例。
+4. **输出**
+   1. 输出共三行，对应三个对象数组，按计算机学院、管理学院、土木学院的顺序输出。
+   2. 每行输出一个学院所有学生的姓名，按数组元素顺序输出。
+   3. 如果某学院没有学生信息输入，则输出"`no student`“
+   4. 数据输出的具体格式可以参考输入样例
+
+```
+输入样例:
+6
+赵六 M CS 2019 56 
+杨二 F CS 2020 12 
+张三 F BU 2018 73 
+李四 M CS 2020 14 
+孙五 F BU 2019 45 
+钱七 M BU 2019 67
+
+样例输出:
+赵六 杨二 李四
+no student 
+张三 孙五 钱七
+```
+
+
 
 ### B：学生信息操作（50分）
 
@@ -70,6 +88,57 @@
    4. 定义查询函数 `Query`，根据提供的学号，查询学生是否存在，并调用输出的数 `Print` 信息作输出。
 
    5. 学生总数的所有操作都必须使用学生类的静态数据 `total` 来进行，不能在类外使用其他函数或变量进行统计。
+   
+4. **输入**
+
+   1. 第一行输入表示有个学生
+   2. 接着输入 t 行，每行输入一个学生信息共四个参数，包括学号、姓名、性别、学院，数据之间用空格隔开。其中学院用缩写表示，CS表示计算机学院，MA表示管理学院，BU表示土木学院
+   3. 每输入一个学生信息，就创建一个新的学生对象。然后根据学院缩写，把新学生插入到对应对象数组的末尾。（提示：本题目无需使用GenID 函数）
+   4. 接着一行输入k，表示有k个命令。接着输入k行，每行包含若千个参数
+      1. 第 1 个参数是单个大写字母，I 表示插入，D表示刪除，Q表示查询
+      2. 如果是插入操作，后面还有5个参数，表示插入位置和新学生信息（四个参数）
+      3. 如果是刪除操作，后面还有1个参数，表示要刪除的学号
+      4. 如果是查询操作，后面还有1个参数，表示要查询的学号
+   5. 数据输入的具体格式可以参考输入样例
+
+5. **输出**
+
+   1. 输出共 k+1 行，前k行对应输入k个命令的相应结果
+      1. 如果是插入，调用 Ins 函数执行操作，并输出插入后的学院数组的所有学生姓名
+      2. 如果是刪除，调用 Del 函数执行操作，并输出刪除后的学院数组的所有学生姓名。如果刪除的学号不存在，则输出“Delete no such ID”。无需考虑刪除后学院没有学生的情况
+      3. 如果是查询，调用 Query函数执行操作，输出该学号对应学生的具体信息如果查询的学号不存在，则输出 ”Query no such ID“
+      4. 最后1行输出三个学院的学生总和，要求使用静态数据成员 total 来输出。
+   2. 数据输出的具体格式可以参考输出样例
+   3. 提示：本题目一开始无须输出三个学院的学生姓名，本题目的输出和第一题严格不同，请理解输出数据的含义
+
+```
+输入样例:
+6
+赵六 M CS 2019 56 
+杨二 F CS 2020 12 
+张三 F BU 2018 73 
+李四 M CS 2020 14 
+孙五 F BU 2019 45 
+钱七 M BU 2019 67
+6
+I 1111950 陈大 FCS
+I 4111729 吴九 FCS
+D 222011
+D 112014
+Q 331873
+Q 111873
+
+样例输出:
+陈大 赵六 李四
+陈大 赵六 李四 吴九
+Delete no such ID
+陈大 赵六 吴九
+331873 张三 女 土木学院
+Query no such ID
+Total 7 students
+```
+
+
 
 ### C：学生学号排序（10分）
 
@@ -82,8 +151,183 @@
    1. 必须使用简单选择排序实现学生排序。
    2. 不允许使用第三方对象或函数实现排序，学生必须写出完整的排序算法。
    3. 无需考虑学号相同的情况。
+3. **输入**
+   1. 第一行输入 t表示有 t个学生
+   2. 接着输入t，每行输入一个学生信息两个参数，包括学号、姓名
+   3. 数据输入的具体格式可以参考输入样例
+4. **输出**
+   1. 输出4行
+   2. 前3行输出第1趟排序、第2趟排序和最终排序的学号
+   3. 第4行输出最终排序的学生姓名
+   4. 数据输出的具体格式可以参考输入样
 
-## 功能实现：
+```
+例样例输入
+111956 赵六
+222012 杨二
+331873 张三
+112014 李四
+221945 孙五
+331967 钱七
+
+样例输出
+111956 222012 331873 112014 221945 331967
+111956 112014 331873 222012 221945 331967
+111956 112014 221945 222012 331873 331967
+赵六 李四 孙五 杨二 张三 钱七
+```
+
+
+
+## 代码更新202110：
+
+### A题
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Student {
+	public:
+		int id;
+		string name;
+		char gender;
+		string institute;
+		int year;
+		int studNo;
+
+		Student();
+		Student(string name, char gender, string institute, int year, int studNo);
+
+		void GenID();
+		void Print();
+};
+
+Student::Student() {};
+
+Student::Student(string name, char gender, string institute, int year, int studNo) {
+	this->name=name;
+	this->gender=gender;
+	this->institute=institute;
+	this->year=year;
+	this->studNo=studNo;
+};
+
+void Student::Print() {
+//	cout << id << name << " " << gender << " " << institute << " " << year << " " << studNo << endl;
+	cout << name << " ";
+};
+
+void Student::GenID() {
+	if(institute == "CS") {
+		id = 11*10000 + year%100*100 + studNo;
+	} else if(institute == "MA") {
+		id = 22*10000 + year%100*100 + studNo;
+	} else if(institute == "BU") {
+		id = 33*10000 + year%100*100 + studNo;
+	}
+}
+
+void PrintInfo(int size, Student *arr);
+
+int main() {
+//	cout<<"hello"<<endl;
+//	Student stud("张三 ", 'F', "CS", 2019, 34);
+//	stud.Print();
+	Student csArr[20];
+	Student maArr[20];
+	Student buArr[20];
+	int csIndex=0;
+	int maIndex=0;
+	int buIndex=0;
+//	csArr[0]=stud;
+//	csArr[0].Print();
+
+	int t=0;
+	cin>>t;
+	for(int i=0; i<t; i++) {
+		string name;
+		char gender;
+		string institute;
+		int year;
+		int studNo;
+		cin >> name >> gender >> institute >> year >> studNo;
+		Student stud(name, gender, institute, year, studNo);
+		stud.GenID();
+		if(institute == "CS") {
+			csArr[csIndex++]=stud;
+		} else if(institute == "MA") {
+			maArr[maIndex++]=stud;
+		} else if(institute == "BU") {
+			buArr[buIndex++]=stud;
+		}
+//		stud.Print();
+	}
+
+	PrintInfo(csIndex, csArr);
+	PrintInfo(maIndex, maArr);
+	PrintInfo(buIndex, buArr);
+
+//	if(csIndex==0) {
+//		cout<< "no student";
+//	} else {
+//		for(int i=0; i<csIndex; i++) {
+//			csArr[i].Print();
+//		}
+//	}
+//	cout << endl;
+//
+//	if(maIndex==0) {
+//		cout<< "no student";
+//	} else {
+//		for(int i=0; i<maIndex; i++) {
+//			maArr[i].Print();
+//		}
+//	}
+//	cout << endl;
+//
+//	if(buIndex==0) {
+//		cout<< "no student";
+//	} else {
+//		for(int i=0; i<buIndex; i++) {
+//			buArr[i].Print();
+//		}
+//	}
+//	cout << endl;
+}
+
+void PrintInfo(int size, Student *arr) {
+	if(size==0) {
+		cout<< "no student";
+	} else {
+		for(int i=0; i<size; i++) {
+			arr[i].Print();
+		}
+	}
+	cout << endl;
+};
+
+```
+
+### B题
+
+```cpp
+
+```
+
+
+
+### C题
+
+```cpp
+
+```
+
+
+
+## 功能实现与扩展202106：
 
 ### A：输入文字模板
 
@@ -1307,13 +1551,15 @@ void Read() {
 
 登录网址172.31.221.90，按指导文档操作开始上机考试，以下为上机考试内容，考试时间14：30-16:30
 
-#### 共3个考题
+#### 问题A
 
 ![image-20211020141854587](C++实现学生信息管理系统.assets/image-20211020141854587.png)
 
 ![image-20211020141900449](C++实现学生信息管理系统.assets/image-20211020141900449.png)
 
 ![image-20211020141911534](C++实现学生信息管理系统.assets/image-20211020141911534.png)
+
+#### 问题B
 
 ![image-20211020141917357](C++实现学生信息管理系统.assets/image-20211020141917357.png)
 
@@ -1322,6 +1568,8 @@ void Read() {
 ![image-20211020142033914](C++实现学生信息管理系统.assets/image-20211020142033914.png)
 
 ![image-20211020142040534](C++实现学生信息管理系统.assets/image-20211020142040534.png)
+
+#### 问题C
 
 ![image-20211020142047142](C++实现学生信息管理系统.assets/image-20211020142047142.png)
 
@@ -1342,6 +1590,8 @@ void Read() {
 192人参加考试，结束时只有3个大佬完全做对A题，B、C题好像没有看到做出来的
 
 ### 第四章（完整考题程序代码）
+
+#### 答案A
 
 ```cpp
 /**
@@ -1529,7 +1779,7 @@ int main()
 
 ```
 
-
+#### 答案B
 
 ```cpp
 /**
@@ -1871,7 +2121,7 @@ int main()
 
 ```
 
-
+#### 答案C
 
 ```cpp
 /**
