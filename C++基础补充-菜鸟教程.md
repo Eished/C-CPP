@@ -46,7 +46,6 @@ int main()
   system("pause"); //注意：“system("pause")”;语句会显示“请按任意键继续……”
   return 0;
 }
-// From:本帖，"xuezy"
 ```
 
 此方法是采用 system() 函数中的 pause 命令进行程序的暂停。
@@ -380,7 +379,7 @@ void func(void(*f1)(int)){
 
 这无法使用 using 完成。
 
-但是，使用 <functional> 中的 function 可以更好地完成任务：
+但是，使用 `<functional>` 中的 function 可以更好地完成任务：
 
 ```C++
 void func(function<void(int)>f1){
@@ -744,11 +743,11 @@ public:
 private:
     const int a;//只能在构造函数初始化列表中初始化
     static int b;//在类的实现文件中定义并初始化
-    conststatic int c;//与 static const int c;相同。
+    const static int c;//与 static const int c;相同。
 };
  
 int Test::b=0;//static成员变量不能在构造函数初始化列表中初始化，因为它不属于某个对象。
-cosnt intTest::c=0;//注意：给静态成员变量赋值时，不需要加static修饰符，但要加cosnt。
+const int Test::c=0;//注意：给静态成员变量赋值时，不需要加static修饰符，但要加const。
 ```
 
 cosnt 成员函数主要目的是防止成员函数修改对象的内容。即 const 成员函数不能修改成员变量的值，但可以访问成员变量。当方法成员函数时，该函数只能是 const 成员函数。
@@ -791,7 +790,7 @@ private:
 staticint i;
 };
  
-intfoo::i=20;
+int foo::i=20;
 ```
 
 这表明：
@@ -809,10 +808,10 @@ intfoo::i=20;
 class Test{
 public:
     static const int mask1;
-    conststatic int mask2;
+    const static int mask2;
 };
-constTest::mask1=0xffff;
-constTest::mask2=0xffff;
+const Test::mask1=0xffff;
+const Test::mask2=0xffff;
 //它们的初始化没有区别，虽然一个是静态常量一个是常量静态。静态都将存储在全局变量区域，其实最后结果都一样。可能在不同编译器内，不同处理，但最后结果都一样。
 ```
 
@@ -1066,15 +1065,15 @@ public:
     }
  
 private:
-    inti; // 普通成员变量
-    constint ci; // 常量成员变量
+    int i; // 普通成员变量
+    const int ci; // 常量成员变量
     int&ri; // 引用成员变量
-    staticint si; // 静态成员变量
+    static int si; // 静态成员变量
     //staticint si2 = 100; // error: 只有静态常量成员变量，才可以这样初始化
-    staticconst int csi; // 静态常量成员变量
-    staticconst int csi2 = 100; // 静态常量成员变量的初始化(Integral type) (1)
-    staticconst double csd; // 静态常量成员变量(non-Integral type)
-    //staticconst double csd2 = 99.9; // error: 只有静态常量整型数据成员才可以在类中初始化
+    static const int csi; // 静态常量成员变量
+    static const int csi2 = 100; // 静态常量成员变量的初始化(Integral type) (1)
+    static const double csd; // 静态常量成员变量(non-Integral type)
+    //static const double csd2 = 99.9; // error: 只有静态常量整型数据成员才可以在类中初始化
 };
 // 静态成员变量的初始化(Integral type)
 int BClass::si = 0;
@@ -2210,7 +2209,7 @@ int main ()
 
 #### 5. gets()
 
-gets()： 接受一个字符串，可以接收空格并输出，需包含 **#include<string>**。
+gets()： 接受一个字符串，可以接收空格并输出，需包含 **`#include<string>`**。
 
 ```C++
 #include<iostream>

@@ -63,7 +63,7 @@ no student
 1. **业务描述：**
 
    - 在前一题的基础上：加入增加、删除、查询的信息操作
-   - 某学核的学生信息包括：学号、姓名、性别、学院。其中学号是整数；性别用单个大写字母表示，F 示女性，M 示男性；姓名是字符串类型。假设学校有三个学院：计算机字院编码11，管理学院编码 22，土木学院编码 33。
+   - 某学校的学生信息包括：学号、姓名、性别、学院。其中学号是整数；性别用单个大写字母表示，F 示女性，M 示男性；姓名是字符串类型。假设学校有三个学院：计算机字院编码11，管理学院编码 22，土木学院编码 33。
    - 编写一个程序完成学生信息的插入、存储、输出、增加、删除、查询等功能
 
 2. **程序开发要求：**
@@ -94,7 +94,7 @@ no student
    1. 第一行输入表示有个学生
    2. 接着输入 t 行，每行输入一个学生信息共四个参数，包括学号、姓名、性别、学院，数据之间用空格隔开。其中学院用缩写表示，CS表示计算机学院，MA表示管理学院，BU表示土木学院
    3. 每输入一个学生信息，就创建一个新的学生对象。然后根据学院缩写，把新学生插入到对应对象数组的末尾。（提示：本题目无需使用GenID 函数）
-   4. 接着一行输入k，表示有k个命令。接着输入k行，每行包含若千个参数
+   4. 接着一行输入k，表示有k个命令。接着输入k行，每行包含若干个参数
       1. 第 1 个参数是单个大写字母，I 表示插入，D表示刪除，Q表示查询
       2. 如果是插入操作，后面还有5个参数，表示插入位置和新学生信息（四个参数）
       3. 如果是刪除操作，后面还有1个参数，表示要刪除的学号
@@ -114,15 +114,15 @@ no student
 ```
 输入样例:
 6
-赵六 M CS 2019 56 
-杨二 F CS 2020 12 
-张三 F BU 2018 73 
-李四 M CS 2020 14 
-孙五 F BU 2019 45 
-钱七 M BU 2019 67
+111956 赵六 M CS
+222012 杨二 F MA
+331873 张三 F BU
+112014 李四 M CS
+221945 孙五 F MA
+331967 钱七 M BU
 6
-I 1111950 陈大 FCS
-I 4111729 吴九 FCS
+I 1 111950 陈大 F CS
+I 4 111729 吴九 F CS
 D 222011
 D 112014
 Q 331873
@@ -195,32 +195,28 @@ class Student {
 		string name;
 		char gender;
 		string institute;
-		int year;
-		int studNo;
-
+		
 		Student();
-		Student(string name, char gender, string institute, int year, int studNo);
+		Student(string name, char gender, string institute);
 
-		void GenID();
+		void GenID(int year,int studNo);
 		void Print();
 };
 
 Student::Student() {};
 
-Student::Student(string name, char gender, string institute, int year, int studNo) {
+Student::Student(string name, char gender, string institute) {
 	this->name=name;
 	this->gender=gender;
 	this->institute=institute;
-	this->year=year;
-	this->studNo=studNo;
 };
 
 void Student::Print() {
-//	cout << id << name << " " << gender << " " << institute << " " << year << " " << studNo << endl;
+//	cout << id << name << " " << gender << " " << institute << " " << endl;
 	cout << name << " ";
 };
 
-void Student::GenID() {
+void Student::GenID(int year,int studNo) {
 	if(institute == "CS") {
 		id = 11*10000 + year%100*100 + studNo;
 	} else if(institute == "MA") {
@@ -230,10 +226,9 @@ void Student::GenID() {
 	}
 }
 
-void PrintInfo(int size, Student *arr);
+void PrintInfo(int size, Student arr[]);
 
 int main() {
-//	cout<<"hello"<<endl;
 //	Student stud("张三 ", 'F', "CS", 2019, 34);
 //	stud.Print();
 	Student csArr[20];
@@ -254,8 +249,8 @@ int main() {
 		int year;
 		int studNo;
 		cin >> name >> gender >> institute >> year >> studNo;
-		Student stud(name, gender, institute, year, studNo);
-		stud.GenID();
+		Student stud(name, gender, institute);
+		stud.GenID(year, studNo);
 		if(institute == "CS") {
 			csArr[csIndex++]=stud;
 		} else if(institute == "MA") {
@@ -263,42 +258,14 @@ int main() {
 		} else if(institute == "BU") {
 			buArr[buIndex++]=stud;
 		}
-//		stud.Print();
 	}
 
 	PrintInfo(csIndex, csArr);
 	PrintInfo(maIndex, maArr);
 	PrintInfo(buIndex, buArr);
-
-//	if(csIndex==0) {
-//		cout<< "no student";
-//	} else {
-//		for(int i=0; i<csIndex; i++) {
-//			csArr[i].Print();
-//		}
-//	}
-//	cout << endl;
-//
-//	if(maIndex==0) {
-//		cout<< "no student";
-//	} else {
-//		for(int i=0; i<maIndex; i++) {
-//			maArr[i].Print();
-//		}
-//	}
-//	cout << endl;
-//
-//	if(buIndex==0) {
-//		cout<< "no student";
-//	} else {
-//		for(int i=0; i<buIndex; i++) {
-//			buArr[i].Print();
-//		}
-//	}
-//	cout << endl;
 }
 
-void PrintInfo(int size, Student *arr) {
+void PrintInfo(int size, Student arr[]) {
 	if(size==0) {
 		cout<< "no student";
 	} else {

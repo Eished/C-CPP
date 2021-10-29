@@ -4,6 +4,9 @@
 using namespace std;
 
 class Student {
+	private:
+		static int total;
+	
 	public:
 		int id;
 		string name;
@@ -42,8 +45,16 @@ void Student::GenID(int year,int studNo) {
 
 void PrintInfo(int size, Student arr[]);
 
+void Input();
+
+void Ins();
+
+void Del();
+
+void Qurey();
+
 int main() {
-//	Student stud("å¼ ä¸‰ ", 'F', "CS", 2019, 34);
+//	Student stud("ÕÅÈý ", 'F', "CS", 2019, 34);
 //	stud.Print();
 	Student csArr[20];
 	Student maArr[20];
@@ -77,6 +88,7 @@ int main() {
 	PrintInfo(csIndex, csArr);
 	PrintInfo(maIndex, maArr);
 	PrintInfo(buIndex, buArr);
+	
 }
 
 void PrintInfo(int size, Student arr[]) {
@@ -89,3 +101,7 @@ void PrintInfo(int size, Student arr[]) {
 	}
 	cout << endl;
 };
+
+void Input(){
+	
+}
